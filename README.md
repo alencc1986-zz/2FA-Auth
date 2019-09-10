@@ -16,6 +16,8 @@ For more information, look for *"Two-Factor Authentication"* in sites or forums.
 
 * GNU/Linux distribution
 
+* *GIT*
+
 * *GnuPG*
 
 * *OATH Toolkit (OATHTOOL)*
@@ -31,6 +33,12 @@ If you don't know how to use GnuPG, feel free to read these articles at ***Reddi
 [[Tutorial for beginners] How to install and use GnuPG on GNU/Linux](https://www.reddit.com/r/linux/comments/creb29/tutorial_for_beginners_how_to_install_and_use/)
 
 [[Tutorial for beginners] GnuPG: how to export, import, delete and revoke your keys](https://www.reddit.com/r/linux/comments/ct7yjr/tutorial_for_beginners_gnupg_how_to_export_import/)
+
+<br>
+
+**READ THE PDF FILE "2FA-Auth/doc/How_to_use_2FA-Auth.pdf"**
+
+This file explain how to use 2FA-Auth.
 
 <br>
 
