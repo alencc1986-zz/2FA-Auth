@@ -27,7 +27,7 @@ InfoFile="$HOME/$ProjectDir/2fa-info"
 BackupFile="2fa-config-backup.tar"
 ExportFile="2fa-tokens.txt"
 
-Version="v1.1-0"
+Version="v1.1-1"
 
 LibraryDir="$( dirname $0 )/library"
 
