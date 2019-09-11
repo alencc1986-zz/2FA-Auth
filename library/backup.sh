@@ -47,7 +47,7 @@ function Backup () {
                      Create && echo "SUCCESS! Backup file created with your config!" \
                             || echo "FAIL! Something wrong happened while trying to backup!"
                  else
-                     if [[ $( find $TokenDir -type f -name *.token | wc -l ) = "0" ]]; then
+                     if [[ $( $TokenCount ) = "0" ]]; then
                          echo "FAIL! There's no token to backup!"
                      else
                          Overwrite "Would you like to overwrite the backup file?" \

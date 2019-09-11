@@ -44,12 +44,12 @@ function Information () {
     echo "2FA-Auth // Information"
     echo "======================="
     echo
-    echo "Version.............: v1.0-0"
+    echo "Version.............: v1.0-1"
     echo "Description.........: Generate '2FA' codes in your terminal"
     echo "Software license....: GNU GPL (General Public License) v3.0"
     echo "Created by..........: Vinicius de Alencar (alencc1986)"
     echo
-    echo "Your GnuPG UserID...: $( grep UserID $InfoFile | cut -d' ' -f2 )"
+    echo "Your GnuPG UserID...: $( grep UserID $InfoFile | cut -d' ' -f2- )"
     echo "Your GnuPG KeyID....: $( grep KeyID $InfoFile | cut -d' ' -f2 )"
 }
 
@@ -120,7 +120,11 @@ function SystemCheck () {
         UserID=$( echo $UserID | sed 's| \+||g' ) ; echo "UserID $UserID" > $InfoFile
         KeyID=$( echo ${KeyID^^} | sed 's| \+||g' ) ; echo "KeyID $KeyID" >> $InfoFile
     else
-        UserID=$( grep "UserID" $InfoFile | cut -d' ' -f2 )
+        UserID=$( grep "UserID" $InfoFile | cut -d' ' -f2- )
         KeyID=$( grep "KeyID" $InfoFile | cut -d' ' -f2 )
     fi
+}
+
+function TokenCount () {
+    return $( find $ProjectDir -type f -name *.token | wc -l )
 }

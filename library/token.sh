@@ -64,7 +64,7 @@ function TokenDel () {
     echo "========================"
     echo
 
-    if [[ $( find $TokenDir -type f -name *.token | wc -l ) = "0" ]]; then
+    if [[ $( $TokenCount ) = "0" ]]; then
         echo "ATTENTION! No services to be excluded!"
     else
         echo "Which service do you want to exclude? (type 'A' to 'DELETE [A]LL TOKENS' or 'C' to '[C]ANCEL')"
@@ -113,7 +113,7 @@ function TokenList () {
     echo "======================"
     echo
 
-    if [[ $( find $TokenDir -type f -name *.token | wc -l ) = "0" ]]; then
+    if [[ $( $TokenCount ) = "0" ]]; then
         echo "ATTENTION! Nothing to be listed!"
     else
         echo "Listing available services:"
@@ -154,7 +154,7 @@ function TokenExport () {
     echo "========================"
     echo
 
-    if [[ $( find $TokenDir -type f -name *.token | wc -l ) = "0" ]]; then
+    if [[ $( $TokenCount ) = "0" ]]; then
         echo "ATTENTION! There's no token to export!"
     else
         echo "Exporting your tokens! Please, wait..."
@@ -180,7 +180,7 @@ function TokenGenerate () {
     echo "=============================="
     echo
 
-    if [[ $( find $TokenDir -type f -name *.token | wc -l ) = "0" ]]; then
+    if [[ $( $TokenCount ) = "0" ]]; then
         echo "ATTENTION! No services available!"
     else
         echo "Generating 2FA codes for all available services! Please, wait..."
@@ -191,15 +191,15 @@ function TokenGenerate () {
         Index=0
         for Service in $( basename -a -s .token $( find $TokenDir -type f -name *.token | sort ) ); do
             TOTP="$( $GPG --quiet --local-user $KeyID --recipient $UserID --decrypt $TokenDir/$Service.token )"
-            Array2FACode[$Index]="$( $OATHTOOL -b --totp "$TOTP" )"
+            [[ $? = "0" ]] && Array2FACode[$Index]="$( $OATHTOOL -b --totp "$TOTP" )" || Array2FACode[$Index]="N/A"
             let Index+=1
         done
 
         Index=0
         for Number in $( seq 1 1 $( ls -1 $TokenDir | wc -l ) ); do
-            echo "[$Number] $( sed -r ':loop; s| ('.'*):$|\1'.':|; t loop' <<< "$(printf '%-20s:\n' ${ArrayService[$Index]})" ) ${Array2FACode[$Index]}"
+            echo "[$Number]|${ArrayService[$Index]}|${Array2FACode[$Index]}"
             let Index+=1
-        done
+        done | column -t -s \|
     fi
 }
 
