@@ -64,7 +64,7 @@ function TokenDel () {
     echo "========================"
     echo
 
-    if [[ $( $TokenCount ) = "0" ]]; then
+    if [[ $( find $ProjectDir -type f -name *.token | wc -l ) = "0" ]]; then
         echo "ATTENTION! No services to be excluded!"
     else
         echo "Which service do you want to exclude? (type 'A' to 'DELETE [A]LL TOKENS' or 'C' to '[C]ANCEL')"
@@ -113,7 +113,7 @@ function TokenList () {
     echo "======================"
     echo
 
-    if [[ $( $TokenCount ) = "0" ]]; then
+    if [[ $( find $ProjectDir -type f -name *.token | wc -l ) = "0" ]]; then
         echo "ATTENTION! Nothing to be listed!"
     else
         echo "Listing available services:"
@@ -154,7 +154,7 @@ function TokenExport () {
     echo "========================"
     echo
 
-    if [[ $( $TokenCount ) = "0" ]]; then
+    if [[ $( find $ProjectDir -type f -name *.token | wc -l ) = "0" ]]; then
         echo "ATTENTION! There's no token to export!"
     else
         echo "Exporting your tokens! Please, wait..."
@@ -180,7 +180,7 @@ function TokenGenerate () {
     echo "=============================="
     echo
 
-    if [[ $( $TokenCount ) = "0" ]]; then
+    if [[ $( find $ProjectDir -type f -name *.token | wc -l ) = "0" ]]; then
         echo "ATTENTION! No services available!"
     else
         echo "Generating 2FA codes for all available services! Please, wait..."

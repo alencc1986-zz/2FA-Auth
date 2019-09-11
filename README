@@ -51,6 +51,8 @@ It's really easy to use this project. Open a terminal and type:
 $ cd /path/to/2FA-Auth/
 $ ./2FA-Auth.sh
 
+Optionally, you can type "./2FA-Auth.sh help" and get a simple help menu.
+
 Running 2FA-Auth for the first time, it's going to look for GnuPG and OATHTOOL,
 and it's going to ask you about your GPG IDs (KeyID & UserID) in order to encrypt
 decrypt your token(s).

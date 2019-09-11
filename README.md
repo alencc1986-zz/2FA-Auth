@@ -36,9 +36,11 @@ If you don't know how to use GnuPG, feel free to read these articles at ***Reddi
 
 <br>
 
-**READ THE PDF FILE "2FA-Auth/doc/How_to_use_2FA-Auth.pdf"**
+**PDF FILE: "2FA-Auth/doc/How_to_use_2FA-Auth.pdf"**
 
 This file explain how to use 2FA-Auth.
+
+It's a simple "how to use" manual, but it helps you A LOT!
 
 <br>
 

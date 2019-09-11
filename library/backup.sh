@@ -22,18 +22,18 @@
 
 source $LibraryDir/essential.sh
 
-function Create () {
-    cd $HOME
-    [[ -f $ExportFile ]] && tar --sort=name -cf $BackupFile $ProjectDir $ExportFile \
-                         || tar --sort=name -cf $BackupFile $ProjectDir
-    cd - &> /dev/null
-}
-
-function Restore () {
-    tar -xf $HOME/$BackupFile -C $HOME
-}
-
 function Backup () {
+    function Create () {
+        cd $HOME
+        [[ -f $ExportFile ]] && tar --sort=name -cf $BackupFile $ProjectDir $ExportFile \
+                             || tar --sort=name -cf $BackupFile $ProjectDir
+        cd - &> /dev/null
+    }
+
+    function Restore () {
+        tar -xf $HOME/$BackupFile -C $HOME
+    }
+
     clear
 
     echo "========================="

@@ -27,6 +27,8 @@ InfoFile="$HOME/$ProjectDir/2fa-info"
 BackupFile="2fa-config-backup.tar"
 ExportFile="2fa-tokens.txt"
 
+Version="v1.1-0"
+
 LibraryDir="$( dirname $0 )/library"
 
 for Library in backup essential token; do
@@ -41,40 +43,14 @@ done
 
 SystemCheck
 
-while true; do
-    clear
-
-    echo "====================="
-    echo "2FA-Auth // Main menu"
-    echo "====================="
-    echo
-    echo "[1] Add a new 2FA token in your profile"
-    echo "[2] Delete one or all available tokens (be carreful!)"
-    echo "[3] List all available 2FA tokens set in your profile"
-    echo "[4] Export all 2FA tokens to use them in another app/program"
-    echo "[5] Generate 2FA codes in order to login on a site/service"
-    echo "[6] Save your configuration in a backup file"
-    echo "[7] Restore your configuration from a backup file"
-    echo
-    echo "[I] Information about 2FA-Auth"
-    echo "[Q] Quit"
-    echo
-    read -p "Option: " -e -n1 Option
-
-    Option=${Option^^}
-
-    case $Option in
-        1) Token Add ;;
-        2) Token Del ;;
-        3) Token List ;;
-        4) Token Export ;;
-        5) Token Generate ;;
-        6) Backup Create ;;
-        7) Backup Restore ;;
-        I) Information ;;
-        Q) break ;;
-        *) echo "Invalid option!" ;;
+if [[ -z $1 ]]; then
+    MainMenu
+else
+    case ${1,,} in
+           help) Usage ;;
+           info) Information ;;
+        version) echo "2FA-Auth current version is: $Version" ;;
+        gencode) TokenGenerate ;;
+              *) echo "Invalid option!" ; echo ; Usage ;;
     esac
-
-    PressAnyKey
-done
+fi

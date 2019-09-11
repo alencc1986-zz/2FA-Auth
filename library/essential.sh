@@ -38,13 +38,11 @@ function ConfirmAction () {
 }
 
 function Information () {
-    clear
-
     echo "======================="
     echo "2FA-Auth // Information"
     echo "======================="
     echo
-    echo "Version.............: v1.0-1"
+    echo "Version.............: $Version"
     echo "Description.........: Generate '2FA' codes in your terminal"
     echo "Software license....: GNU GPL (General Public License) v3.0"
     echo "Created by..........: Vinicius de Alencar (alencc1986)"
@@ -62,6 +60,44 @@ function InputData () {
         echo "ATTENTION!!! You *MUST* type something!!!"
         InputData "$Message"
     fi
+}
+
+function MainMenu () {
+    while true; do
+        clear
+
+        echo "====================="
+        echo "2FA-Auth // Main menu"
+        echo "====================="
+        echo
+        echo "[1] Add a new 2FA token in your profile"
+        echo "[2] Delete one or all available tokens (be carreful!)"
+        echo "[3] List all available 2FA tokens set in your profile"
+        echo "[4] Export all 2FA tokens to use them in another app/program"
+        echo "[5] Generate 2FA codes in order to login on a site/service"
+        echo "[6] Save your configuration in a backup file"
+        echo "[7] Restore your configuration from a backup file"
+        echo
+        echo "[Q] Quit"
+        echo
+        read -p "Option: " -e -n1 Option
+
+        Option=${Option^^}
+
+        case $Option in
+            1) Token Add ;;
+            2) Token Del ;;
+            3) Token List ;;
+            4) Token Export ;;
+            5) Token Generate ;;
+            6) Backup Create ;;
+            7) Backup Restore ;;
+            Q) break ;;
+            *) echo "Invalid option!" ;;
+        esac
+
+        PressAnyKey
+    done
 }
 
 function Overwrite () {
@@ -125,6 +161,18 @@ function SystemCheck () {
     fi
 }
 
-function TokenCount () {
-    return $( find $ProjectDir -type f -name *.token | wc -l )
+function Usage () {
+    echo "============="
+    echo "2FA-Auth help"
+    echo "============="
+    echo
+    echo "Hello, user \"$USER\"! Here's a help menu about 2FA-Auth parameters!"
+    echo "You can use them without access 2FA-Auth's main menu."
+    echo
+    echo "$ ./2FA-Auth.sh [parameter]"
+    echo
+    echo "                help    = Show this message and quit"
+    echo "                info    = Show 2FA-Auth information and your GPG IDs"
+    echo "                version = Show 2FA-Auth current version"
+    echo "                gencode = Generate 2FA codes without use main menu"
 }
