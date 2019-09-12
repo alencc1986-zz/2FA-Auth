@@ -61,7 +61,7 @@ Remember: GnuPG UserID is your e-mail, while GnuPG KeyID is part of your fingerp
 
 What you can do with 2FA-Auth?
 - Include, exclude, list and export all available services tokens set in your profile;
-- Generate "Two-Factor Authentication" login codes;
+- Generate "Two-Factor Authentication" login codes (using main menu or with parameters);
 - Create and restore a backup with your settings.
 
 Read the PDF file "2FA-Auth/doc/How_to_use_2FA-Auth.pdf" to get more information

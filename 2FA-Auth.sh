@@ -20,14 +20,14 @@
 #                                                                              #
 ################################################################################
 
+Version="v1.2-0"
+
 ProjectDir=".config/2fa-auth"
 TokenDir="$HOME/$ProjectDir/token"
 InfoFile="$HOME/$ProjectDir/2fa-info"
 
 BackupFile="2fa-config-backup.tar"
 ExportFile="2fa-tokens.txt"
-
-Version="v1.1-1"
 
 LibraryDir="$( dirname $0 )/library"
 
@@ -49,7 +49,6 @@ else
     case ${1,,} in
            help) Usage ;;
            info) Information ;;
-        version) echo "2FA-Auth current version is: $Version" ;;
         gencode) TokenGenerate ;;
               *) echo "Invalid option!" ; echo ; Usage ;;
     esac

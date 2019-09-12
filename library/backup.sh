@@ -42,13 +42,13 @@ function Backup () {
     echo
 
     case $1 in
-         Create) if [[ ! -f $HOME/$BackupFile ]]; then
-                     echo "Saving your config in '$HOME/$BackupFile'..."
-                     Create && echo "SUCCESS! Backup file created with your config!" \
-                            || echo "FAIL! Something wrong happened while trying to backup!"
+         Create) if [[ $( $TokenCount ) = "0" ]]; then
+                     echo "FAIL! There's no token to backup!"
                  else
-                     if [[ $( $TokenCount ) = "0" ]]; then
-                         echo "FAIL! There's no token to backup!"
+                     if [[ ! -f $HOME/$BackupFile ]]; then
+                         echo "Saving your config in '$HOME/$BackupFile'..."
+                         Create && echo "SUCCESS! Backup file created with your config!" \
+                                || echo "FAIL! Something wrong happened while trying to backup!"
                      else
                          Overwrite "Would you like to overwrite the backup file?" \
                                    Create \
@@ -65,6 +65,7 @@ function Backup () {
                      echo "token by a previous one which isn't working anymore. It's up to you"
                      echo "to decide: keep the 'old' config or restore/overwrite your files?"
                      echo
+
                      Overwrite "Would you like to continue and overwrite your config?" \
                                Restore \
                                "Configuration restored! Restart 2FA-Auth!" \

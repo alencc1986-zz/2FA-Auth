@@ -22,9 +22,9 @@ For more information, look for *"Two-Factor Authentication"* in sites or forums.
 
 * *OATH Toolkit (OATHTOOL)*
 
-Every GNU/Linux distribution has a specific way to install any program/library.
+GNU/Linux distributions have a specific way to install any program/library. Check how to install the programs above, according to your distribution.
 
-Check if both programs are installed in your system and, if not, install them immediately.
+Check if all programs are installed in your system and, if not, install them immediately.
 
 The next step is that you **MUST** create (or import) *GPG Keys* in your profile. They are used by GnuPG to encrypt and decrypt your tokens.
 

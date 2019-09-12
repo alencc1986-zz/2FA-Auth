@@ -42,7 +42,7 @@ function TokenAdd () {
             echo "ATTENTION! '$Service' was included already!"
             echo "[TIP] Try to use an alternative name for this service."
         else
-            InputData "Insert (copy/paste) 2FA token for '$Service' (type 'C' to '[C]ANCEL'):"
+            InputData "Insert (type or copy-paste) 2FA token for '$Service' (type 'C' to '[C]ANCEL'):"
 
             if [[ $( echo ${Input,,} ) = "c" ]]; then
                 echo "Canceling..."
@@ -59,6 +59,10 @@ function TokenAdd () {
 }
 
 function TokenDel () {
+    function Remove () {
+        rm -rf $TokenDir/$Service.token
+    }
+
     echo "========================"
     echo "2FA-Auth // Delete token"
     echo "========================"
@@ -89,13 +93,13 @@ function TokenDel () {
             $Counter) Index=$CaseOption-1
                       Service=${Array[$Index]}
                       ConfirmAction "Are you sure you want to delete '$Service' token?" \
-                                    "rm -rf $TokenDir/$Service.token" \
+                                    Remove \
                                     "'$Service' token deleted!" \
                                     "It wasn't possible to delete '$Service' token!" \
                                     "Keeping '$Service' token in your profile." ;;
 
                    a) ConfirmAction "Are you sure you want to delete ALL tokens?" \
-                                    "rm -rf $TokenDir/*.token" \
+                                    Remove \
                                     "All tokens were deleted!" \
                                     "It wasn't possible to delete your tokens!" \
                                     "Keeping all tokens in your profiles." ;;
@@ -143,10 +147,11 @@ function TokenExport () {
 
         Index=0
         for Number in $( seq 1 1 ${#ArrayService[*]} ); do
-            echo "[$Number] $( sed -r ':loop; s| ('.'*):$|\1'.':|; t loop' <<< "$(printf '%-20s:\n' ${ArrayService[$Index]})" ) ${ArrayToken[$Index]}" \
-                >> $HOME/$ExportFile
+            echo "[$Number]|${ArrayService[$Index]}|${ArrayToken[$Index]}" >> /tmp/$ExportFile
             let Index+=1
         done
+
+        column -t -s \| /tmp/$ExportFile > $HOME/$ExportFile && rm -rf /tmp/$ExportFile
     }
 
     echo "========================"
@@ -163,13 +168,16 @@ function TokenExport () {
         if [[ -f $HOME/$ExportFile ]]; then
             echo "There's a file with exported codes!"
             Overwrite "Would you like to overwrite it?" \
-                      "ExportToFile" \
+                      ExportToFile \
                       "Your tokens were exported to $ExportFile!" \
                       "It wasn't possible to export your tokens and overwrite $ExportFile!" \
                       "Keeping your 'old' export file."
         else
-            ExportToFile && echo "SUCCESS! Your tokens were exported to $ExportFile!" \
-                    || echo "FAIL! It wasn't possible to export your tokens!"
+            ConfirmAction "Do you want to proceed and export your tokens?" \
+                          ExportToFile \
+                          "Tokens exported to $ExportFile!" \
+                          "It wasn't possible to export your tokens!" \
+                          "Skipping this action!"
         fi
     fi
 }

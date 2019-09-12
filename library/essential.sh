@@ -25,14 +25,14 @@ function ConfirmAction () {
     Action="$2"
     Success="SUCCESS! $3"
     Fail="FAIL! $4"
-    Keep="$5"
+    NoChange="$5"
 
     read -p "$Message [y/N] " -e -n1 Confirm
     [[ -z "$Confirm" ]] && Confirm="n" || Confirm=${Confirm,,}
 
     case $Confirm in
         y) $Action && echo "$Success" || echo "$Fail" ;;
-        n) echo "$Keep" ;;
+        n) echo "$NoChange" ;;
         *) echo "Invalid option!" ;;
     esac
 }
@@ -43,7 +43,7 @@ function Information () {
     echo "======================="
     echo
     echo "Version.............: $Version"
-    echo "Description.........: Generate '2FA' codes in your terminal"
+    echo "Description.........: Generating 2FA codes in your terminal"
     echo "Software license....: GNU GPL (General Public License) v3.0"
     echo "Created by..........: Vinicius de Alencar (alencc1986)"
     echo
@@ -69,6 +69,8 @@ function MainMenu () {
         echo "====================="
         echo "2FA-Auth // Main menu"
         echo "====================="
+        echo
+        echo "Current version: $Version"
         echo
         echo "[1] Add a new 2FA token in your profile"
         echo "[2] Delete one or all available tokens (be carreful!)"
@@ -167,12 +169,11 @@ function Usage () {
     echo "============="
     echo
     echo "Hello, user \"$USER\"! Here's a help menu about 2FA-Auth parameters!"
-    echo "You can use them without access 2FA-Auth's main menu."
+    echo "You can use them instead of access 2FA-Auth's main menu."
     echo
     echo "$ ./2FA-Auth.sh [parameter]"
     echo
     echo "                help    = Show this message and quit"
     echo "                info    = Show 2FA-Auth information and your GPG IDs"
-    echo "                version = Show 2FA-Auth current version"
     echo "                gencode = Generate 2FA codes without use main menu"
 }
