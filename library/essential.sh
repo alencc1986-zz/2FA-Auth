@@ -168,12 +168,12 @@ function Usage () {
     echo "2FA-Auth help"
     echo "============="
     echo
-    echo "Hello, user \"$USER\"! Here's a help menu about 2FA-Auth parameters!"
+    echo "Hello, user! Here's a help menu about 2FA-Auth parameters!"
     echo "You can use them instead of access 2FA-Auth's main menu."
     echo
-    echo "$ ./2FA-Auth.sh [parameter]"
+    echo "2FA-Auth.sh [parameter]"
     echo
-    echo "                help    = Show this message and quit"
-    echo "                info    = Show 2FA-Auth information and your GPG IDs"
-    echo "                gencode = Generate 2FA codes without use main menu"
+    echo "    help    = Show this message and quit"
+    echo "    info    = Show 2FA-Auth information and your GPG IDs"
+    echo "    gencode = Generate 2FA codes without use main menu"
 }

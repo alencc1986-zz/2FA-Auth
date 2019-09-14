@@ -22,6 +22,10 @@
 
 source $LibraryDir/essential.sh
 
+function SortToken () {
+    find $TokenDir -type f -name *.token | sort
+}
+
 function TokenAdd () {
     echo "========================="
     echo "2FA-Auth // Add new token"
@@ -41,6 +45,7 @@ function TokenAdd () {
         if [[ -f $TokenDir/$Service.token ]]; then
             echo "ATTENTION! '$Service' was included already!"
             echo "[TIP] Try to use an alternative name for this service."
+            echo "[RECOMMENDATION] How about type \"servicename_username\"?"
         else
             InputData "Insert (type or copy-paste) 2FA token for '$Service' (type 'C' to '[C]ANCEL'):"
 
@@ -68,13 +73,13 @@ function TokenDel () {
     echo "========================"
     echo
 
-    if [[ $( find $HOME/$ProjectDir -type f -name *.token | wc -l ) = "0" ]]; then
+    if [[ $( find $TokenDir -type f -name *.token | wc -l ) = "0" ]]; then
         echo "ATTENTION! No services to be excluded!"
     else
         echo "Which service do you want to exclude? (type 'A' to 'DELETE [A]LL TOKENS' or 'C' to '[C]ANCEL')"
         echo
 
-        Array=( $( basename -a -s .token $( find $TokenDir -type f -name *.token | sort ) ) )
+        Array=( $( basename -a -s .token $( SortToken ) ) )
         Counter=
 
         for Number in $( seq 1 1 ${#Array[*]} ); do
@@ -99,7 +104,7 @@ function TokenDel () {
                                     "Keeping '$Service' token in your profile." ;;
 
                    a) ConfirmAction "Are you sure you want to delete ALL tokens?" \
-                                    Remove \
+                                    "rm -rf $TokenDir/*.token" \
                                     "All tokens were deleted!" \
                                     "It wasn't possible to delete your tokens!" \
                                     "Keeping all tokens in your profiles." ;;
@@ -117,13 +122,13 @@ function TokenList () {
     echo "======================"
     echo
 
-    if [[ $( find $HOME/$ProjectDir -type f -name *.token | wc -l ) = "0" ]]; then
+    if [[ $( find $TokenDir -type f -name *.token | wc -l ) = "0" ]]; then
         echo "ATTENTION! Nothing to be listed!"
     else
         echo "Listing available services:"
         echo
 
-        Array=( $( basename -a -s .token $( find $TokenDir -type f -name *.token | sort ) ) )
+        Array=( $( basename -a -s .token $( SortToken ) ) )
         Index=0
 
         for Number in $( seq 1 1 ${#Array[*]} ); do
@@ -137,10 +142,10 @@ function TokenExport () {
     function ExportToFile () {
         cat /dev/null > $HOME/$ExportFile
 
-        ArrayService=( $( basename -a -s .token $( find $TokenDir -type f -name *.token | sort ) ) )
+        ArrayService=( $( basename -a -s .token $( SortToken ) ) )
 
         Index=0
-        for Service in $( basename -a -s .token $( find $TokenDir -type f -name *.token | sort ) ); do
+        for Service in $( basename -a -s .token $( SortToken ) ); do
             ArrayToken[$Index]=$( $GPG --quiet -u $KeyID -r $UserID -d $TokenDir/$Service.token )
             let Index+=1
         done
@@ -159,7 +164,7 @@ function TokenExport () {
     echo "========================"
     echo
 
-    if [[ $( find $HOME/$ProjectDir -type f -name *.token | wc -l ) = "0" ]]; then
+    if [[ $( find $TokenDir -type f -name *.token | wc -l ) = "0" ]]; then
         echo "ATTENTION! There's no token to export!"
     else
         echo "Exporting your tokens! Please, wait..."
@@ -188,16 +193,16 @@ function TokenGenerate () {
     echo "=============================="
     echo
 
-    if [[ $( find $HOME/$ProjectDir -type f -name *.token | wc -l ) = "0" ]]; then
+    if [[ $( find $TokenDir -type f -name *.token | wc -l ) = "0" ]]; then
         echo "ATTENTION! No services available!"
     else
         echo "Generating 2FA codes for all available services! Please, wait..."
         echo
 
-        ArrayService=( $( basename -a -s .token $( find $TokenDir -type f -name *.token | sort ) ) )
+        ArrayService=( $( basename -a -s .token $( SortToken ) ) )
 
         Index=0
-        for Service in $( basename -a -s .token $( find $TokenDir -type f -name *.token | sort ) ); do
+        for Service in $( basename -a -s .token $( SortToken ) ); do
             TOTP="$( $GPG --quiet --local-user $KeyID --recipient $UserID --decrypt $TokenDir/$Service.token )"
             [[ $? = "0" ]] && Array2FACode[$Index]="$( $OATHTOOL -b --totp "$TOTP" )" || Array2FACode[$Index]="N/A"
             let Index+=1

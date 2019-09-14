@@ -20,7 +20,7 @@
 #                                                                              #
 ################################################################################
 
-Version="v1.2-0"
+Version="v1.2-1"
 
 ProjectDir=".config/2fa-auth"
 TokenDir="$HOME/$ProjectDir/token"
@@ -50,6 +50,6 @@ else
            help) Usage ;;
            info) Information ;;
         gencode) TokenGenerate ;;
-              *) echo "Invalid option!" ; echo ; Usage ;;
+              *) Usage ;;
     esac
 fi
