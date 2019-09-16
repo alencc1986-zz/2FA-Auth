@@ -45,7 +45,7 @@ function TokenAdd () {
         if [[ -f $TokenDir/$Service.token ]]; then
             echo "ATTENTION! '$Service' was included already!"
             echo "[TIP] Try to use an alternative name for this service."
-            echo "[RECOMMENDATION] How about type \"servicename_username\"?"
+            echo "[RECOMMENDATION] How about use \"servicename_username\"?"
         else
             InputData "Insert (type or copy-paste) 2FA token for '$Service' (type 'C' to '[C]ANCEL'):"
 
@@ -140,8 +140,6 @@ function TokenList () {
 
 function TokenExport () {
     function ExportToFile () {
-        cat /dev/null > $HOME/$ExportFile
-
         ArrayService=( $( basename -a -s .token $( SortToken ) ) )
 
         Index=0

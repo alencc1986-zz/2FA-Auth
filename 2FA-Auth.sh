@@ -20,7 +20,7 @@
 #                                                                              #
 ################################################################################
 
-Version="v1.2-1"
+Version="v1.2-2"
 
 ProjectDir=".config/2fa-auth"
 TokenDir="$HOME/$ProjectDir/token"
@@ -47,9 +47,8 @@ if [[ -z $1 ]]; then
     MainMenu
 else
     case ${1,,} in
-           help) Usage ;;
-           info) Information ;;
         gencode) TokenGenerate ;;
+           help) Usage ;;
               *) Usage ;;
     esac
 fi
