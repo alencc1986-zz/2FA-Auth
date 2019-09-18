@@ -27,6 +27,8 @@ function SortToken () {
 }
 
 function TokenAdd () {
+    clear
+
     echo "========================="
     echo "2FA-Auth // Add new token"
     echo "========================="
@@ -64,6 +66,8 @@ function TokenAdd () {
 }
 
 function TokenDel () {
+    clear
+
     function Remove () {
         rm -rf $TokenDir/$Service.token
     }
@@ -117,6 +121,8 @@ function TokenDel () {
 }
 
 function TokenList () {
+    clear
+
     echo "======================"
     echo "2FA-Auth // List token"
     echo "======================"
@@ -139,6 +145,8 @@ function TokenList () {
 }
 
 function TokenExport () {
+    clear
+
     function ExportToFile () {
         ArrayService=( $( basename -a -s .token $( SortToken ) ) )
 
@@ -186,6 +194,8 @@ function TokenExport () {
 }
 
 function TokenGenerate () {
+    clear
+
     echo "=============================="
     echo "2FA-Auth // Generate 2FA codes"
     echo "=============================="
@@ -194,23 +204,48 @@ function TokenGenerate () {
     if [[ $( find $TokenDir -type f -name *.token | wc -l ) = "0" ]]; then
         echo "ATTENTION! No services available!"
     else
-        echo "Generating 2FA codes for all available services! Please, wait..."
-        echo
+        SAVED_STTY="`stty --save`"
 
         ArrayService=( $( basename -a -s .token $( SortToken ) ) )
+        KeyPressed=""
 
-        Index=0
-        for Service in $( basename -a -s .token $( SortToken ) ); do
-            TOTP="$( $GPG --quiet --local-user $KeyID --recipient $UserID --decrypt $TokenDir/$Service.token )"
-            [[ $? = "0" ]] && Array2FACode[$Index]="$( $OATHTOOL -b --totp "$TOTP" )" || Array2FACode[$Index]="N/A"
-            let Index+=1
+        let CursorEndPosition=$( ls -1 $TokenDir | wc -l)+7
+
+        echo "Generating 2FA codes for all available services! Please, wait..."
+        echo "These codes are updated after 60 seconds..."
+        echo
+
+        while [ "$KeyPressed" = "" ]; do
+            tput civis
+
+            Index=0
+            for Service in $( basename -a -s .token $( SortToken ) ); do
+                TOTP="$( $GPG --quiet --local-user $KeyID --recipient $UserID --decrypt $TokenDir/$Service.token )"
+                [[ $? = "0" ]] && Array2FACode[$Index]="$( $OATHTOOL -b --totp "$TOTP" )" || Array2FACode[$Index]="N/A"
+                let Index+=1
+            done
+
+            stty -echo -icanon -icrnl time 0 min 0
+
+            Index=0
+            for Number in $( seq 1 1 $( ls -1 $TokenDir | wc -l ) ); do
+                echo "[$Number]|${ArrayService[$Index]}|${Array2FACode[$Index]}"
+                let Index+=1
+            done | column -t -s \|
+
+            echo
+            read -p "Press 'S' to stop updating the codes... " -e -n1 -t1 KeyPressed
+
+            [[ ${KeyPressed,,} != "s" ]] && KeyPressed=
+
+            tput cup 7 0
         done
 
-        Index=0
-        for Number in $( seq 1 1 $( ls -1 $TokenDir | wc -l ) ); do
-            echo "[$Number]|${ArrayService[$Index]}|${Array2FACode[$Index]}"
-            let Index+=1
-        done | column -t -s \|
+        tput cup $CursorEndPosition 0
+        tput cnorm
+        tput ed
+
+        stty $SAVED_STTY
     fi
 }
 
