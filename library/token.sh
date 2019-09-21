@@ -212,7 +212,7 @@ function TokenGenerate () {
         let CursorEndPosition=$( ls -1 $TokenDir | wc -l)+7
 
         echo "Generating 2FA codes for all available services! Please, wait..."
-        echo "These codes are updated after 60 seconds..."
+        echo "These codes are updated every 60 seconds."
         echo
 
         while [ "$KeyPressed" = "" ]; do
@@ -221,7 +221,8 @@ function TokenGenerate () {
             Index=0
             for Service in $( basename -a -s .token $( SortToken ) ); do
                 TOTP="$( $GPG --quiet --local-user $KeyID --recipient $UserID --decrypt $TokenDir/$Service.token )"
-                [[ $? = "0" ]] && Array2FACode[$Index]="$( $OATHTOOL -b --totp "$TOTP" )" || Array2FACode[$Index]="N/A"
+                [[ $? = "0" ]] && Array2FACode[$Index]="$( $OATHTOOL --base32 --now=$( date +%H:%M:%S ) --time-step-size=60 --totp "$TOTP" )" \
+                               || Array2FACode[$Index]="N/A"
                 let Index+=1
             done
 
