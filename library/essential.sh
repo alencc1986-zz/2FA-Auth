@@ -125,11 +125,12 @@ function PressAnyKey () {
 }
 
 function SystemCheck () {
-    [[ ! $( which gpg2 ) ]] && { echo "ERROR! 'GnuPG' isn't installed in your system!" ; exit 2 ; } || GPG=$( which gpg2 )
-    [[ ! $( which oathtool ) ]] && { echo "ERROR! 'OAth Toolkit' isn't installed in your system!" ; exit 2 ; } || OATHTOOL=$( which oathtool )
-    [[ $( $GPG --fingerprint | wc -l ) = "0" ]] && { echo "ERROR! No GnuPG key(s) found in your profile!" ; exit 3 ; }
-
     [[ ! -d $TokenDir ]] && mkdir -p $TokenDir
+
+    [[ ! $( which gpg2 ) ]] && { echo "ERROR! 'GnuPG' isn't installed in your system!" ; exit 2 ; } || GPG=$( which gpg )
+    [[ ! $( which oathtool ) ]] && { echo "ERROR! 'OAth Toolkit' isn't installed in your system!" ; exit 2 ; } || OATHTOOL=$( which oathtool )
+
+    [[ $( $GPG --fingerprint | wc -l ) = "0" ]] && { echo "ERROR! No GnuPG key(s) found in your profile!" ; exit 3 ; }
 
     if [[ ! -f $InfoFile ]]; then
         clear
@@ -174,6 +175,5 @@ function Usage () {
     echo "2FA-Auth.sh [parameter]"
     echo
     echo "    help    = Show this message and quit"
-    echo "    info    = Show 2FA-Auth information and your GPG IDs"
     echo "    gencode = Generate 2FA codes without use main menu"
 }

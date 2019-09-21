@@ -42,7 +42,7 @@ function Backup () {
     echo
 
     case $1 in
-         Create) if [[ $( $TokenCount ) = "0" ]]; then
+         Create) if [[ $( find $TokenDir -type f -name *.token | wc -l ) = "0" ]]; then
                      echo "FAIL! There's no token to backup!"
                  else
                      if [[ ! -f $HOME/$BackupFile ]]; then
