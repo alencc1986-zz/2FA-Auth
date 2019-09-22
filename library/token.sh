@@ -221,8 +221,7 @@ function TokenGenerate () {
             Index=0
             for Service in $( basename -a -s .token $( SortToken ) ); do
                 TOTP="$( $GPG --quiet --local-user $KeyID --recipient $UserID --decrypt $TokenDir/$Service.token )"
-                [[ $? = "0" ]] && Array2FACode[$Index]="$( $OATHTOOL --base32 --now=$( date +%H:%M:%S ) --time-step-size=60 --totp "$TOTP" )" \
-                               || Array2FACode[$Index]="N/A"
+                [[ $? = "0" ]] && Array2FACode[$Index]="$( $OATHTOOL --base32 --totp "$TOTP" )" || Array2FACode[$Index]="N/A"
                 let Index+=1
             done
 
