@@ -14,17 +14,23 @@ For more information, look for *"Two-Factor Authentication"* in sites or forums.
 
 **System Requirement**
 
-* GNU/Linux distribution
+* GNU/Linux distribution with BASH
 
-* *GIT*
+* *GIT* (used to clone 2FA-Auth into your computer)
 
-* *GnuPG*
+* *GnuPG* (used to keep your site/service token encrypted)
 
-* *OATH Toolkit (OATHTOOL)*
+* *OATH Toolkit* (a.k.a. OATHTOOL, used to generate 2FA codes)
 
-GNU/Linux distributions have a specific way to install any program/library. Check how to install the programs above, according to your distribution.
+2FA-Auth can automatically install GnuPG and OAth Toolkit, but if it fails, please check how to install the programs above, according to your distribution.
 
-Check if all programs are installed in your system and, if not, install them immediately.
+This automatic method of package installation involves these package managers:
+
+* APT and APT-GET for Debian-based systems
+* DNF, URPMI and YUM for RedHat-based systems
+* EMERGE and EQUO for Gentoo-based systems
+* PACMAN for Arch-based systems
+* ZYPPER for SUSE/openSUSE-based systems
 
 The next step is that you **MUST** create (or import) *GPG Keys* in your profile. They are used by GnuPG to encrypt and decrypt your tokens.
 

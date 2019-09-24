@@ -20,7 +20,7 @@
 #                                                                              #
 ################################################################################
 
-Version="v1.3-3"
+Version="v1.4-0"
 
 ProjectDir=".config/2fa-auth"
 TokenDir="$HOME/$ProjectDir/token"

@@ -18,10 +18,16 @@ What do you need to run 2FA-Auth?
 -- Operating System: any GNU/Linux distribution with BASH
 -- Essential softwares: GIT, GnuPG and OATHTOOL
 
-For every GNU/Linux distribution, there's a specific way to install programs,
-libraries and additional software. Please, check how to install them according
-to your distroibution.
+2FA-Auth can automatically install GnuPG and OATHTOOL, but if it fails, please,
+check how to install these packages according to your distroibution.
 
+This automatic method of package installation involves these package managers:
+
+- APT and APT-GET for Debian-based systems
+- DNF, URPMI and YUM for RedHat-based systems
+- EMERGE and EQUO for Gentoo-based systems
+- PACMAN for Arch-based systems
+- ZYPPER for SUSE/openSUSE-based systems
 
 -------------
 2. GnuPG keys

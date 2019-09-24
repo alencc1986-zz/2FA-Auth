@@ -20,6 +20,8 @@
 #                                                                              #
 ################################################################################
 
+source $LibraryDir/pkg-install.sh
+
 function ConfirmAction () {
     Message="$1"
     Action="$2"
@@ -125,10 +127,12 @@ function PressAnyKey () {
 }
 
 function SystemCheck () {
+    InstallPackages
+
     [[ ! -d $TokenDir ]] && mkdir -p $TokenDir
 
-    [[ ! $( which gpg2 ) ]] && { echo "ERROR! 'GnuPG' isn't installed in your system!" ; exit 2 ; } || GPG=$( which gpg )
-    [[ ! $( which oathtool ) ]] && { echo "ERROR! 'OAth Toolkit' isn't installed in your system!" ; exit 2 ; } || OATHTOOL=$( which oathtool )
+    GPG=$( which gpg )
+    OATHTOOL=$( which oathtool )
 
     [[ $( $GPG --fingerprint | wc -l ) = "0" ]] && { echo "ERROR! No GnuPG key(s) found in your profile!" ; exit 3 ; }
 
