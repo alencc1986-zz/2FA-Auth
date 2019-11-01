@@ -16,18 +16,21 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-Version="v1.4-1"
+Version="v2.0-0"
 
 ProjectDir=".config/2fa-auth"
-TokenDir="$HOME/$ProjectDir/token"
-InfoFile="$HOME/$ProjectDir/2fa-info"
+InfoFile="$HOME/$ProjectDir/2fa-auth.info"
+
+TempFile="$HOME/$ProjectDir/temp-tokens.txt"
+TokenFile="$HOME/$ProjectDir/2fa-tokens.gpg"
+TokenFileTXT="$HOME/$ProjectDir/2fa-tokens.txt"
 
 BackupFile="2fa-config-backup.tar"
 ExportFile="2fa-tokens.txt"
 
 LibraryDir="$( dirname $0 )/library"
 
-for Library in backup essential token; do
+for Library in backup essential menu system token; do
     if [[ -f $LibraryDir/$Library.sh ]]; then
         source $LibraryDir/$Library.sh
     else
@@ -44,7 +47,6 @@ if [[ -z $1 ]]; then
 else
     case ${1,,} in
         gencode) TokenGenerate ;;
-           help) Usage ;;
               *) Usage ;;
     esac
 fi

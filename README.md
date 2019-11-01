@@ -6,7 +6,7 @@
 
 <br>
 
-***2FA-Auth*** is a BASH script that provides a user-friendly way to generate *"Two-Factor Authentication (2FA)"* code. It works like Google Authenticator (and similar programs), but you can use your GNU/Linux terminal, instead of cellphone with any authentication software.
+***2FA-Auth*** is a BASH script that provides a user-friendly way to generate *"Two-Factor Authentication (2FA)"* code. It works like Google Authenticator® and similar programs, but you can use your GNU/Linux terminal, instead of cellphone with any authentication software.
 
 For more information, look for *"Two-Factor Authentication"* in sites or forums.
 
@@ -14,13 +14,13 @@ For more information, look for *"Two-Factor Authentication"* in sites or forums.
 
 **System Requirement**
 
-* GNU/Linux distribution with BASH
+* GNU/Linux distribution with BASH interpreter
 
-* *GIT* (used to clone 2FA-Auth into your computer)
+* GIT -- used to clone 2FA-Auth into your computer
 
-* *GnuPG* (used to keep your site/service token encrypted)
+* GnuPG -- used to keep your site/service token encrypted
 
-* *OATH Toolkit* (a.k.a. OATHTOOL, used to generate 2FA codes)
+* OATH Toolkit a.k.a. OATHTOOL -- used to generate 2FA codes
 
 2FA-Auth can automatically install GnuPG and OAth Toolkit, but if it fails, please check how to install the programs above, according to your distribution.
 
@@ -32,7 +32,7 @@ This automatic method of package installation involves these package managers:
 * PACMAN for Arch-based systems
 * ZYPPER for SUSE/openSUSE-based systems
 
-The next step is that you **MUST** create (or import) *GPG Keys* in your profile. They are used by GnuPG to encrypt and decrypt your tokens.
+The next step is that you **MUST** create or import *GPG Keys* in your profile. They are used by GnuPG to encrypt and decrypt your tokens.
 
 If you don't know how to use GnuPG, feel free to read these articles at ***Reddit r/linux*** forum clicking in the links bellow.
 
@@ -56,7 +56,7 @@ First things first, do **NOT** confuse *GnuPG ID* with *GnuPG Key*.
 
 GPG key is created (or imported) into ***$HOME/.gnupg/*** while GPG IDs are parts of your key (UserID and KeyID) and 2FA-Auth asks for them. KeyID is the group of last 16 digits of your GPG key (fingerprint), while your UserID is the e-mail used to create your key.
 
-***2FA-Auth*** saves your 2FA token(s) in this directory: ***$HOME/.config/2fa-auth/token/*** and your GnuPG IDs (UserID and KeyID) are saved in ***$HOME/.config/2fa-auth/2fa-info***
+***2FA-Auth*** saves your 2FA token(s) in this directory: ***$HOME/.config/2fa-auth/*** and your GnuPG IDs (UserID and KeyID) are saved in ***$HOME/.config/2fa-auth/2fa-auth.info***
 
 <br>
 

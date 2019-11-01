@@ -16,13 +16,36 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-source $LibraryDir/essential.sh
+function DecryptToken () {
+    $GPG --quiet --local-user $KeyID --recipient $UserID --decrypt $TokenFile
+}
 
-function SortToken () {
-    find $TokenDir -type f -name *.token | sort
+function EncryptToken () {
+    $GPG --quiet --local-user $KeyID --recipient $UserID --yes --output $TokenFile --encrypt $TokenFileTXT
 }
 
 function TokenAdd () {
+    function Add () {
+        InputData "Insert (type or copy-paste) 2FA token for '$Service' (type 'C' to '[C]ANCEL'):"
+
+        if [[ $( echo ${Input,,} ) = "c" ]]; then
+            echo "Canceling..."
+        else
+            Token="$Input"
+
+            [[ -f $TokenFile ]] && DecryptToken > $TempFile
+
+            echo "$Service|$Token" >> $TempFile && \
+            sort $TempFile > $TokenFileTXT
+
+            EncryptToken && \
+                echo "SUCCESS! '$Service' has been included using the token '$Token'" || \
+                echo "ERROR! Something wrong happened while importing the '$Service' token!"
+
+            rm -rf $TempFile $TokenFileTXT
+        fi
+    }
+
     clear
 
     echo "========================="
@@ -40,53 +63,50 @@ function TokenAdd () {
     else
         Service=$( echo ${Input,,} | sed "s| \+|_|g; s|\.\+|_|g" )
 
-        if [[ -f $TokenDir/$Service.token ]]; then
+        if [[ ! -f $TokenFile ]]; then
+            Add
+        elif [[ $( DecryptToken | grep $Service ) ]]; then
+            echo
             echo "ATTENTION! '$Service' was included already!"
             echo "[TIP] Try to use an alternative name for this service."
             echo "[RECOMMENDATION] How about use \"servicename_username\"?"
         else
-            InputData "Insert (type or copy-paste) 2FA token for '$Service' (type 'C' to '[C]ANCEL'):"
-
-            if [[ $( echo ${Input,,} ) = "c" ]]; then
-                echo "Canceling..."
-            else
-                Token="$Input"
-
-                echo "$Token" > $TokenDir/$Service.txt && \
-                $GPG -u $KeyID -r $UserID -o $TokenDir/$Service.token -e $TokenDir/$Service.txt && \
-                    { echo "SUCCESS! '$Service' has been included using the token '$Token'" ; rm -rf $TokenDir/$Service.txt ; } || \
-                    { echo "ERROR! Something wrong happened while importing the '$Service' token!" ; rm -rf $TokenDir/$Service.{token,txt} ; }
-            fi
+            Add
         fi
     fi
 }
 
 function TokenDel () {
-    clear
-
     function Remove () {
-        rm -rf $TokenDir/$Service.token
+        DecryptToken | sed "/$Service/d" > $TokenFileTXT
+        [[ $( cat $TokenFileTXT | wc -l ) > "0" ]] && EncryptToken || rm -rf $TokenFile
+        rm -rf $TokenFileTXT
     }
+
+    clear
 
     echo "========================"
     echo "2FA-Auth // Delete token"
     echo "========================"
     echo
 
-    if [[ $( find $TokenDir -type f -name *.token | wc -l ) = "0" ]]; then
-        echo "ATTENTION! No services to be excluded!"
+    if [[ ! -f $TokenFile ]]; then
+        echo "ATTENTION! There are no services to be excluded!"
     else
         echo "Which service do you want to exclude? (type 'A' to 'DELETE [A]LL TOKENS' or 'C' to '[C]ANCEL')"
         echo
 
-        Array=( $( basename -a -s .token $( SortToken ) ) )
+        declare -a Array
+        Array=( $( DecryptToken | cut -d"|" -f1 ) )
         Counter=
+        Limit=$( DecryptToken | wc -l )
 
-        for Number in $( seq 1 1 ${#Array[*]} ); do
+        for Number in $( seq 1 1 $Limit ); do
             let Index=$Number-1
             echo "[$Number] ${Array[$Index]}"
             [[ $Number = ${#Array[*]} ]] && Counter=$Counter$Number || Counter=$Counter$Number"|"
         done
+
         Counter="+($Counter)"
 
         echo
@@ -104,7 +124,7 @@ function TokenDel () {
                                     "Keeping '$Service' token in your profile." ;;
 
                    a) ConfirmAction "Are you sure you want to delete ALL tokens?" \
-                                    "rm -rf $TokenDir/*.token" \
+                                    "rm -rf $TokenFile" \
                                     "All tokens were deleted!" \
                                     "It wasn't possible to delete your tokens!" \
                                     "Keeping all tokens in your profiles." ;;
@@ -124,61 +144,55 @@ function TokenList () {
     echo "======================"
     echo
 
-    if [[ $( find $TokenDir -type f -name *.token | wc -l ) = "0" ]]; then
+    if [[ ! -f $TokenFile ]]; then
         echo "ATTENTION! Nothing to be listed!"
     else
         echo "Listing available services:"
         echo
 
-        Array=( $( basename -a -s .token $( SortToken ) ) )
-        Index=0
-
-        for Number in $( seq 1 1 ${#Array[*]} ); do
-            echo "[$Number] ${Array[$Index]}"
-            let Index+=1
+        Counter=1
+        DecryptToken | cut -d"|" -f1 | while read Line; do
+            echo "[$Counter] $Line"
+            let Counter+=1
         done
     fi
 }
 
 function TokenExport () {
-    clear
-
     function ExportToFile () {
-        ArrayService=( $( basename -a -s .token $( SortToken ) ) )
+        cat /dev/null > $TempFile
 
-        Index=0
-        for Service in $( basename -a -s .token $( SortToken ) ); do
-            ArrayToken[$Index]=$( $GPG --quiet -u $KeyID -r $UserID -d $TokenDir/$Service.token )
-            let Index+=1
-        done
+        LineNumber=1
 
-        Index=0
-        for Number in $( seq 1 1 ${#ArrayService[*]} ); do
-            echo "[$Number]|${ArrayService[$Index]}|${ArrayToken[$Index]}" >> /tmp/$ExportFile
-            let Index+=1
-        done
+        DecryptToken | while read Line; do
+            echo "[$LineNumber]|$Line" >> $TempFile
+            let LineNumber+=1
+        done && \
+        column -t -s \| $TempFile > $HOME/$ExportFile
 
-        column -t -s \| /tmp/$ExportFile > $HOME/$ExportFile && rm -rf /tmp/$ExportFile
+        rm -rf $TempFile
     }
+
+    clear
 
     echo "========================"
     echo "2FA-Auth // Export token"
     echo "========================"
     echo
 
-    if [[ $( find $TokenDir -type f -name *.token | wc -l ) = "0" ]]; then
+    if [[ ! -f $TokenFile ]]; then
         echo "ATTENTION! There's no token to export!"
     else
         echo "Exporting your tokens! Please, wait..."
         echo
 
         if [[ -f $HOME/$ExportFile ]]; then
-            echo "There's a file with exported codes!"
+            echo "A file with exported tokens was found!"
             Overwrite "Would you like to overwrite it?" \
                       ExportToFile \
                       "Your tokens were exported to $ExportFile!" \
                       "It wasn't possible to export your tokens and overwrite $ExportFile!" \
-                      "Keeping your 'old' export file."
+                      "Keeping your file with 'old' tokens."
         else
             ConfirmAction "Do you want to proceed and export your tokens?" \
                           ExportToFile \
@@ -197,15 +211,17 @@ function TokenGenerate () {
     echo "=============================="
     echo
 
-    if [[ $( find $TokenDir -type f -name *.token | wc -l ) = "0" ]]; then
+    if [[ ! -f $TokenFile ]]; then
         echo "ATTENTION! No services available!"
     else
+        declare -a Array2FACode
+        declare -a ArrayService
+
+        KeyPressed=""
+        Limit=$( DecryptToken | wc -l )
         SAVED_STTY="`stty --save`"
 
-        ArrayService=( $( basename -a -s .token $( SortToken ) ) )
-        KeyPressed=""
-
-        let CursorEndPosition=$( ls -1 $TokenDir | wc -l)+7
+        let CursorEndPosition=$( DecryptToken | wc -l )+7
 
         echo "Generating 2FA codes for all available services! Please, wait..."
         echo "These codes are updated every 60 seconds."
@@ -215,22 +231,20 @@ function TokenGenerate () {
             tput civis
 
             Index=0
-            for Service in $( basename -a -s .token $( SortToken ) ); do
-                TOTP="$( $GPG --quiet --local-user $KeyID --recipient $UserID --decrypt $TokenDir/$Service.token )"
-                [[ $? = "0" ]] && Array2FACode[$Index]="$( $OATHTOOL --base32 --totp "$TOTP" )" || Array2FACode[$Index]="N/A"
-                let Index+=1
-            done
+            DecryptToken | while read Line; do
+                let Number=$Index+1
 
-            stty -echo -icanon -icrnl time 0 min 0
+                ArrayService[$Index]=$( echo $Line | cut -d"|" -f1 )
+                Token=$( echo $Line | cut -d"|" -f2 )
+                Array2FACode[$Index]=$( $OATHTOOL --base32 --totp "$Token" )
 
-            Index=0
-            for Number in $( seq 1 1 $( ls -1 $TokenDir | wc -l ) ); do
                 echo "[$Number]|${ArrayService[$Index]}|${Array2FACode[$Index]}"
+
                 let Index+=1
             done | column -t -s \|
 
             echo
-            read -p "Press 'S' to stop updating the codes... " -e -n1 -t1 KeyPressed
+            read -p "Press 'S' to stop... " -s -n1 -t1 KeyPressed
 
             [[ ${KeyPressed,,} != "s" ]] && KeyPressed=
 

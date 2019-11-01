@@ -16,15 +16,13 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-source $LibraryDir/essential.sh
-
 function Backup () {
     function Create () {
         cd $HOME
 
         if [[ -f $ExportFile ]]; then
-            echo "Exported tokens found at you user's HOME!"
-            InputData "Would you like to include the exported tokens in your backup file? [y/N]"
+            echo "A file with exported tokens was found at you user's HOME!"
+            InputData "Would you like to include it in your backup file? [y/N]"
 
             [[ -z $Input ]] && Input="n" || Input=${Input,,}
 
@@ -49,18 +47,19 @@ function Backup () {
     echo
 
     case $1 in
-         Create) if [[ $( find $TokenDir -type f -name *.token | wc -l ) = "0" ]]; then
-                     echo "FAIL! There's no token to backup!"
+         Create) if [[ ! -f $TokenFile ]]; then
+                     echo "FAIL! No token file was found!"
+                     echo "It wasn't possible to backup your tokens!"
                  else
                      if [[ ! -f $HOME/$BackupFile ]]; then
-                         echo "Saving your config in '$HOME/$BackupFile'..."
-                         Create && echo "SUCCESS! Backup file created with your config!" \
-                                || echo "FAIL! Something wrong happened while trying to backup!"
+                         echo "Saving your 2FA tokens and your 2FA-Auth config in '$HOME/$BackupFile'..."
+                         Create && echo "SUCCESS! Backup file created successfully!" \
+                                || echo "FAIL! Something wrong happened during the backup process!"
                      else
                          Overwrite "Would you like to overwrite the backup file?" \
                                    Create \
-                                   "Backup file created with your config!" \
-                                   "Something wrong happened while trying to backup your files!" \
+                                   "Backup file created (overwritten) with your tokens/config!" \
+                                   "Something wrong happened when trying to backup your files!" \
                                    "Okay! Keeping your 'old' backup file!"
                      fi
                  fi ;;
@@ -68,18 +67,22 @@ function Backup () {
         Restore) echo "Restoring your config from '$HOME/$BackupFile'..."
                  if [[ -f $HOME/$BackupFile ]]; then
                      echo
-                     echo "Restoring your configuration files, MAYBE you can replace a working"
-                     echo "token by a previous one which isn't working anymore. It's up to you"
-                     echo "to decide: keep the 'old' config or restore/overwrite your files?"
+                     echo "If you restore your token/config with a 'old' backup file, *MAYBE*"
+                     echo "you can replace a 2FA token that is working by a token which isn't"
+                     echo "working anymore. It's up to you to decide: keep the 'old' config or"
+                     echo "restore/overwrite your files."
                      echo
 
-                     Overwrite "Would you like to continue and overwrite your config?" \
+                     Overwrite "Would you like to continue and overwrite your tokens/config?" \
                                Restore \
-                               "Configuration restored! Restart 2FA-Auth!" \
+                               "Configuration restored!" \
                                "Something wrong happened while trying to restore your files!" \
-                               "Okay! Keeping your 'old' configuration!"
+                               "Okay! Keeping your 'old' files!"
+
+                     UserID=$( grep "UserID" $InfoFile | cut -d' ' -f2- )
+                     KeyID=$( grep "KeyID" $InfoFile | cut -d' ' -f2 )
                  else
-                     echo "FAIL! No backup file found to restore your config!"
+                     echo "FAIL! No backup file was found to restore your tokens/config!"
                  fi ;;
     esac
 }

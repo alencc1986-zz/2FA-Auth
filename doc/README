@@ -15,7 +15,7 @@
 
 What do you need to run 2FA-Auth?
 
--- Operating System: any GNU/Linux distribution with BASH
+-- Operating System: any GNU/Linux distribution with BASH interpreter
 -- Essential softwares: GIT, GnuPG and OATHTOOL
 
 2FA-Auth can automatically install GnuPG and OATHTOOL, but if it fails, please,
@@ -57,7 +57,8 @@ It's really easy to use this project. Open a terminal and type:
 $ cd /path/to/2FA-Auth/
 $ ./2FA-Auth.sh
 
-Optionally, you can type "./2FA-Auth.sh help" and get a simple help menu.
+Optionally, you can type "./2FA-Auth.sh gencode" and generate 2FA authentication
+codes in your terminal without use 2FA-Auth main menu.
 
 Running 2FA-Auth for the first time, it's going to look for GnuPG and OATHTOOL,
 and it's going to ask you about your GPG IDs (KeyID & UserID) in order to encrypt
@@ -67,7 +68,7 @@ Remember: GnuPG UserID is your e-mail, while GnuPG KeyID is part of your fingerp
 
 What you can do with 2FA-Auth?
 - Include, exclude, list and export all available services tokens set in your profile;
-- Generate "Two-Factor Authentication" login codes (using main menu or with parameters);
+- Generate "Two-Factor Authentication" login codes (using main menu or parameter);
 - Create and restore a backup with your settings.
 
 Read the PDF file "2FA-Auth/doc/How_to_use_2FA-Auth.pdf" to get more information
@@ -78,9 +79,9 @@ on how to use 2FA-Auth.
 -----------------------
 
 Using 2FA code generator programs, like Google Authenticator(R), it's possible
-to generate "Two-Factor Authenticator (2FA)" codes that changes every minute, and
-these 2FA codes are used with your username and password, in order to provide a
-safe login to a site or service which uses Two-Factor Authenticatior.
+to generate "Two-Factor Authenticator (2FA)" codes (that change every minute),
+and these 2FA codes are used with your username and password, in order to provide
+a safe login to a site or service which uses Two-Factor Authenticatior.
 
 But, instead of use your cellphone or tablet with 2FA code generator, you can
 use your terminal and run "2FA-Auth".
