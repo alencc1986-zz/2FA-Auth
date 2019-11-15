@@ -19,16 +19,16 @@
 function ConfirmAction () {
     Message="$1"
     Action="$2"
-    Success="SUCCESS! $3"
-    Fail="FAIL! $4"
-    NoChange="$5"
+    MsgSuccess="SUCCESS! $3"
+    MsgFail="FAIL! $4"
+    MsgNoChange="$5"
 
     read -p "$Message [y/N] " -e -n1 Confirm
     [[ -z "$Confirm" ]] && Confirm="n" || Confirm=${Confirm,,}
 
     case $Confirm in
-        y) $Action && echo "$Success" || echo "$Fail" ;;
-        n) echo "$NoChange" ;;
+        y) $Action && echo "$MsgSuccess" || echo "$MsgFail" ;;
+        n) echo "$MsgNoChange" ;;
         *) echo "Invalid option!" ;;
     esac
 }
@@ -63,5 +63,5 @@ function Overwrite () {
 
 function PressAnyKey () {
     echo
-    read -p "Press any key to continue... " -e -n1
+    read -e -n1 -p "Press any key to continue... "
 }

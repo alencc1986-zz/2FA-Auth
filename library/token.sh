@@ -26,7 +26,7 @@ function EncryptToken () {
 
 function TokenAdd () {
     function Add () {
-        InputData "Insert (type or copy-paste) 2FA token for '$Service' (type 'C' to '[C]ANCEL'):"
+        InputData "Insert (type or copy-paste) 2FA token for '$Service' (type 'C' to [C]ANCEL):"
 
         if [[ $( echo ${Input,,} ) = "c" ]]; then
             echo "Canceling..."
@@ -34,7 +34,6 @@ function TokenAdd () {
             Token="$Input"
 
             [[ -f $TokenFile ]] && DecryptToken > $TempFile
-
             echo "$Service|$Token" >> $TempFile && \
             sort $TempFile > $TokenFileTXT
 
@@ -47,16 +46,15 @@ function TokenAdd () {
     }
 
     clear
-
     echo "========================="
     echo "2FA-Auth // Add new token"
     echo "========================="
     echo
-    echo "Service name with dots, spaces and uppercase letters are going"
-    echo "to be renamed, using underlines and lowercase letter."
-    echo "Example: '2FA.Auth Code' >>> '2fa_auth_code'"
+    echo "Dots, spaces and uppercase letters in the service name will"
+    echo "to be replaced using underlines and lowercase letter. For"
+    echo "example: '2FA.Auth Code' >>> '2fa_auth_code'"
     echo
-    InputData "Which service do you want to include? (type 'C' to '[C]ANCEL')"
+    InputData "Type the service name you want to add (type 'C' to [C]ANCEL)"
 
     if [[ $( echo ${Input,,} ) = "c" ]]; then
         echo "Canceling..."
@@ -69,7 +67,7 @@ function TokenAdd () {
             echo
             echo "ATTENTION! '$Service' was included already!"
             echo "[TIP] Try to use an alternative name for this service."
-            echo "[RECOMMENDATION] How about use \"servicename_username\"?"
+            echo "[RECOMMENDATION] You can use \"servicename_username\"."
         else
             Add
         fi
@@ -78,13 +76,12 @@ function TokenAdd () {
 
 function TokenDel () {
     function Remove () {
-        DecryptToken | sed "/$Service/d" > $TokenFileTXT
-        [[ $( cat $TokenFileTXT | wc -l ) > "0" ]] && EncryptToken || rm -rf $TokenFile
+        DecryptToken | sed "/$Service/d" > $TokenFileTXT && \
+        { [[ $( cat $TokenFileTXT | wc -l ) > "0" ]] && EncryptToken || rm -rf $TokenFile ; } && \
         rm -rf $TokenFileTXT
     }
 
     clear
-
     echo "========================"
     echo "2FA-Auth // Delete token"
     echo "========================"
@@ -93,7 +90,7 @@ function TokenDel () {
     if [[ ! -f $TokenFile ]]; then
         echo "ATTENTION! There are no services to be excluded!"
     else
-        echo "Which service do you want to exclude? (type 'A' to 'DELETE [A]LL TOKENS' or 'C' to '[C]ANCEL')"
+        echo "Select a service to be deleted (type 'A' to delete [A]LL or 'C' to [C]ANCEL)"
         echo
 
         declare -a Array
@@ -138,7 +135,6 @@ function TokenDel () {
 
 function TokenList () {
     clear
-
     echo "======================"
     echo "2FA-Auth // List token"
     echo "======================"
@@ -147,7 +143,7 @@ function TokenList () {
     if [[ ! -f $TokenFile ]]; then
         echo "ATTENTION! Nothing to be listed!"
     else
-        echo "Listing available services:"
+        echo "Listing all available services:"
         echo
 
         Counter=1
@@ -169,12 +165,9 @@ function TokenExport () {
             let LineNumber+=1
         done && \
         column -t -s \| $TempFile > $HOME/$ExportFile
-
-        rm -rf $TempFile
     }
 
     clear
-
     echo "========================"
     echo "2FA-Auth // Export token"
     echo "========================"
@@ -187,7 +180,7 @@ function TokenExport () {
         echo
 
         if [[ -f $HOME/$ExportFile ]]; then
-            echo "A file with exported tokens was found!"
+            echo "A file with exported tokens was found at your HOME dir!"
             Overwrite "Would you like to overwrite it?" \
                       ExportToFile \
                       "Your tokens were exported to $ExportFile!" \
@@ -200,19 +193,21 @@ function TokenExport () {
                           "It wasn't possible to export your tokens!" \
                           "Skipping this action!"
         fi
+
+        [[ -f $TempFile ]] && rm -rf $TempFile
     fi
 }
 
 function TokenGenerate () {
     clear
-
     echo "=============================="
     echo "2FA-Auth // Generate 2FA codes"
     echo "=============================="
     echo
 
     if [[ ! -f $TokenFile ]]; then
-        echo "ATTENTION! No services available!"
+        echo "ATTENTION! No tokens available!"
+        echo "It's impossible to generate your 2FA codes!"
     else
         declare -a Array2FACode
         declare -a ArrayService

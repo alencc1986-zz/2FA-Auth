@@ -16,21 +16,21 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-Version="v2.0-0"
+Version="v2.1-0"
 
-ProjectDir=".config/2fa-auth"
-InfoFile="$HOME/$ProjectDir/2fa-auth.info"
+ConfigDir=".config/2fa-auth"
+InfoFile="$HOME/$ConfigDir/2fa-auth.info"
 
-TempFile="$HOME/$ProjectDir/temp-tokens.txt"
-TokenFile="$HOME/$ProjectDir/2fa-tokens.gpg"
-TokenFileTXT="$HOME/$ProjectDir/2fa-tokens.txt"
+TempFile="$HOME/$ConfigDir/temp-tokens.txt"
+TokenFile="$HOME/$ConfigDir/2fa-tokens.gpg"
+TokenFileTXT="$HOME/$ConfigDir/2fa-tokens.txt"
 
 BackupFile="2fa-config-backup.tar"
 ExportFile="2fa-tokens.txt"
 
 LibraryDir="$( dirname $0 )/library"
 
-for Library in backup essential menu system token; do
+for Library in backup essential gnupg-encryption menu system token; do
     if [[ -f $LibraryDir/$Library.sh ]]; then
         source $LibraryDir/$Library.sh
     else
@@ -45,8 +45,21 @@ SystemCheck
 if [[ -z $1 ]]; then
     MainMenu
 else
+    function Usage () {
+        echo "============="
+        echo "2FA-Auth help"
+        echo "============="
+        echo
+        echo "Hello, user! This menu can help you with 2FA-Auth additional parameters."
+        echo "You don't need to use the main menu, just these 2 parameters."
+        echo
+        echo "2FA-Auth.sh changekey = Change GnuPG key/encryption"
+        echo "2FA-Auth.sh gencode = Generate 2FA auth codes"
+    }
+
     case ${1,,} in
-        gencode) TokenGenerate ;;
-              *) Usage ;;
+        changekey) ChangeMenu ;;
+          gencode) TokenGenerate ;;
+                *) Usage ;;
     esac
 fi

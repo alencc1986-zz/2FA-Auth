@@ -19,20 +19,20 @@
 function ErrorMsg () {
     echo "ATTENTION! It wasn't possible to determine your system's package manager!"
     echo
-    echo "It wasn't possible to automatically install GnuPG and/or OAth Toolkit"
-    echo "in your system! Please, manually install these programs and run 2FA-Auth"
-    echo "again. Exiting..."
-
-    exit 2
+    echo "It wasn't possible to automatically install GnuPG or OAth Toolkit in"
+    echo "your system! Please, install these programs and run 2FA-Auth again."
+    echo "Exiting..."
+    exit 1
 }
 
 function InstallationMsg () {
     case STATUS in
         success) echo "SUCCESS! Packages installed with success!" ;;
 
-           fail) echo "FAIL! Something wrong happened while installing GnuPG and OAth Toolkit!"
-                 echo "Please, check what happened! Exiting..."
-                 exit 2 ;;
+           fail) echo "FAIL! Something wrong happened while installing GnuPG or OAth Toolkit!"
+                 echo "Please, check what happened! Are you connected to the Internet?"
+                 echo "Exiting..."
+                 exit 1 ;;
     esac
 }
 
@@ -42,16 +42,21 @@ function InstallPackages () {
             [[ $( which $PKGMAN ) ]] && break || ErrorMsg
         done
 
-        case $PKGMAN in
-            apt|apt-get) sudo $PKGMAN update && sudo $PKGMAN install -y gnupg2 oathtool ;;
-                dnf|yum) sudo $PKGMAN check-update && sudo $PKGMAN install -y gnupg2 oathtool ;;
-                 emerge) sudo emerge --sync && sudo emerge gnupg oath-toolkit ;;
-                   equo) sudo equo update && sudo equo install gnupg oathtool ;;
-                 pacman) sudo pacman -Sy && sudo pacman -Sy --noconfirm gnupg oathtool ;;
-                  urpmi) sudo urpmi.update -a && yes | sudo urpmi gnupg2 oath-toolkit ;;
-                 zypper) sudo zypper refresh && sudo zypper -n install gnupg oath-toolkit ;;
-        esac
+        if [[ ! $( ping -c 4 www.google.com ) ]]; then
+            echo "ATTENTION! It seems you're offline!"
+            echo "Check your network settings and your Internet connection."
+        else
+            case $PKGMAN in
+                apt|apt-get) sudo $PKGMAN update && sudo $PKGMAN install -y gnupg2 oathtool ;;
+                    dnf|yum) sudo $PKGMAN check-update && sudo $PKGMAN install -y gnupg2 oathtool ;;
+                     emerge) sudo emerge --sync && sudo emerge gnupg oath-toolkit ;;
+                       equo) sudo equo update && sudo equo install gnupg oathtool ;;
+                     pacman) sudo pacman -Sy && sudo pacman -Sy --noconfirm gnupg oathtool ;;
+                      urpmi) sudo urpmi.update -a && yes | sudo urpmi gnupg2 oath-toolkit ;;
+                     zypper) sudo zypper refresh && sudo zypper -n install gnupg oath-toolkit ;;
+            esac
 
-        [[ $( which gpg ) && $( which oathtool ) ]] && InstallationMsg success || InstallationMsg fail
+            [[ $( which gpg ) && $( which oathtool ) ]] && InstallationMsg success || InstallationMsg fail
+        fi
     fi
 }

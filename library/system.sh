@@ -17,13 +17,12 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 function ErrorMsg () {
-    echo "ATTENTION! It wasn't possible to discovery your system's package manager!"
+    echo "Sorry, but 2FA-Auth couldn't determine which package manager is used by your system!"
     echo
     echo "It wasn't possible to automatically install GnuPG and/or OAth Toolkit"
     echo "in your system! Please, install these programs and run 2FA-Auth again."
     echo "Exiting..."
-
-    exit 2
+    exit 1
 }
 
 function InstallationMsg () {
@@ -32,8 +31,7 @@ function InstallationMsg () {
 
            fail) echo "FAIL! Something wrong happened while installing GnuPG and OAth Toolkit!"
                  echo "Please, check what happened! Exiting..."
-
-                 exit 2 ;;
+                 exit 1 ;;
     esac
 }
 
@@ -58,27 +56,26 @@ function InstallPackages () {
 }
 
 function UnifyTokens () {
-    if [[ -d $ProjectDir/token ]]; then
-        if [[ $( find $ProjectDir/token -type f -name *.token | wc -l ) > "0" ]]; then
+    if [[ -d $HOME/$ConfigDir/token ]]; then
+        if [[ $( find $HOME/$ConfigDir/token -type f -name *.token | wc -l ) > "0" ]]; then
             echo "Gathering all 2FA tokens into one single file. Please, wait!"
             echo
 
             cat /dev/null > $TempFile
 
-            AmountOfTokens=$( find $ProjectDir/token -type f -name *.token | wc -l )
+            AmountOfTokens=$( find $HOME/$ConfigDir/token -type f -name *.token | wc -l )
             Counter=1
 
-            for Service in $( basename -a -s .token $( find $ProjectDir/token -type f -name *.token | sort ) ); do
+            for Service in $( basename -a -s .token $( find $HOME/$ConfigDir/token -type f -name *.token | sort ) ); do
                 echo -n "Processing file $Counter of $AmountOfTokens (service: $Service)... "
 
-                Token=$( $GPG --quiet --local-user $KeyID --recipient $UserID --decrypt $ProjectDir/token/$Service.token )
+                Token=$( $GPG --quiet --local-user $KeyID --recipient $UserID --decrypt $HOME/$ConfigDir/token/$Service.token )
                 if [[ $? != "0" ]]; then
                     echo "FAIL"
                     echo
                     echo "Something wrong happened!"
                     echo "Did you type your GnuPG password correctly?"
-
-                    exit 4
+                    exit 1
                 else
                     echo "$Service|$Token" >> $TempFile
                     let Counter+=1
@@ -87,7 +84,7 @@ function UnifyTokens () {
             done
 
             $GPG --local-user $KeyID --recipient $UserID --yes --output $TokenFile --encrypt $TempFile
-            rm -rf $TempFile $ProjectDir/token
+            rm -rf $TempFile $HOME/$ConfigDir/token
 
             echo
             echo "Tokens were unified with success!"
@@ -104,38 +101,49 @@ function SystemCheck () {
     GPG=$( which gpg )
     OATHTOOL=$( which oathtool )
 
-    [[ $( $GPG --fingerprint | wc -l ) = "0" ]] && { echo "ERROR! No GnuPG key(s) found in your profile!" ; exit 3 ; }
+    [[ $( $GPG --fingerprint | wc -l ) = "0" ]] && { echo "ERROR! No GnuPG key(s) found in your profile!" ; exit 1 ; }
 
-    cd $HOME ; [[ -f $ProjectDir/2fa-info ]] && mv $ProjectDir/2fa-info $InfoFile
+    cd $HOME ; [[ -f $HOME/$ConfigDir/2fa-info ]] && mv $HOME/$ConfigDir/2fa-info $InfoFile
 
     if [[ ! -f $InfoFile ]]; then
-        clear
+        while true; do
+            clear
 
-        echo "================================="
-        echo "2FA-Auth // Initial configuration"
-        echo "================================="
-        echo
-        echo "2FA-Auth needs to know your GnuPG IDs (UserID & KeyID), once they are"
-        echo "essential to encrypt/decrypt your 2FA tokens. UserID is your email which"
-        echo "is registered in your GnuPG key, while KeyID is part of your fingerprint"
-        echo "(KeyID numbers are the last 16 digits/4 blocks of your fingerprint)."
-        echo "If you have 2 or more keys/subkeys, choose one of them and input your IDs"
-        echo "when prompted. About subkeys, it's possible to have a encryption subkey that"
-        echo "can be included/assossiated with your main key."
-        echo "Remmember: both IDs (UserID and KeyID) *MUST* belong to the same GnuPG Key!"
-        echo
-        echo "Listing your available key(s):"
-        echo
-        echo "-------------------------------------------------"
-        $GPG --fingerprint | grep -v "pub\|sub\|-----" | sed 's/uid//g; s/ \+/ /g; s/^ //g; $ d'
-        echo "-------------------------------------------------"
-        echo
+            echo "================================="
+            echo "2FA-Auth // Initial configuration"
+            echo "================================="
+            echo
+            echo "It's mandatory to inform your GnuPG IDs (User ID and Key ID)."
+            echo "These IDs are essential to encrypt/decrypt your 2FA tokens."
+            echo "User ID is your email address which is registered in your GnuPG"
+            echo "key, while Key ID is part of your fingerprint (you may look for"
+            echo "the last 16 digits or last 4 blocks of number in your GnuPG key"
+            echo "fingerprint)."
+            echo "If you have 2 or more keys/subkeys, choose 1 of them and input"
+            echo "IDs when prompted. About subkeys, it's possible to have many en-"
+            echo "cryption subkeys included/associated with your main key."
+            echo "ATTENTION: both IDs *MUST* belong to the same GnuPG Key!"
+            echo
+            echo "Listing your available key(s):"
+            echo
+            echo "-------------------------------------------------"
+            $GPG --fingerprint | grep -v "pub\|sub\|-----" | sed 's/uid//g; s/ \+/ /g; s/^ //g; $ d'
+            echo "-------------------------------------------------"
+            echo
 
-        read -p "Type/copy-paste your UserID (e-mail).......: " -e UserID
-        read -p "Type/copy-paste your KeyID (fingerprint)...: " -e KeyID
+            read -p "Type/copy-paste your User ID (e-mail address): " -e UserID ; UserID=$( echo ${UserID,,} | sed 's| \+||g' ) 
+            read -p "Type/copy-paste your Key ID (fingerprint)....: " -e KeyID ; KeyID=$( echo ${KeyID^^} | sed 's| \+||g' )
 
-        UserID=$( echo $UserID | sed 's| \+||g' ) ; echo "UserID $UserID" > $InfoFile
-        KeyID=$( echo ${KeyID^^} | sed 's| \+||g' ) ; echo "KeyID $KeyID" >> $InfoFile
+
+            if [[ $( $GPG --list-keys $UserID | grep $KeyID ) ]]; then
+                echo "UserID $UserID" > $InfoFile
+                echo "KeyID $KeyID" >> $InfoFile
+                break
+            else
+                echo "ERROR! You typed/included IDs that belong to different GnuPG keys!"
+                PressAnyKey
+            fi
+        done
     else
         UserID=$( grep "UserID" $InfoFile | cut -d' ' -f2- )
         KeyID=$( grep "KeyID" $InfoFile | cut -d' ' -f2 )

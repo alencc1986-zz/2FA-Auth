@@ -25,11 +25,10 @@ function Backup () {
             InputData "Would you like to include it in your backup file? [y/N]"
 
             [[ -z $Input ]] && Input="n" || Input=${Input,,}
-
-            [[ $Input = "y" ]] && tar --sort=name -cf $BackupFile $ProjectDir $ExportFile \
-                               || tar --sort=name -cf $BackupFile $ProjectDir
+            [[ $Input = "y" ]] && tar --sort=name -cf $BackupFile $ConfigDir $ExportFile \
+                               || tar --sort=name -cf $BackupFile $ConfigDir
         else
-            tar --sort=name -cf $BackupFile $ProjectDir
+            tar --sort=name -cf $BackupFile $ConfigDir
         fi
 
         cd - &> /dev/null
@@ -40,7 +39,6 @@ function Backup () {
     }
 
     clear
-
     echo "========================="
     echo "2FA-Auth // Config backup"
     echo "========================="
@@ -67,10 +65,11 @@ function Backup () {
         Restore) echo "Restoring your config from '$HOME/$BackupFile'..."
                  if [[ -f $HOME/$BackupFile ]]; then
                      echo
-                     echo "If you restore your token/config with a 'old' backup file, *MAYBE*"
-                     echo "you can replace a 2FA token that is working by a token which isn't"
-                     echo "working anymore. It's up to you to decide: keep the 'old' config or"
-                     echo "restore/overwrite your files."
+                     echo "If you restore your 2FA-Auth file with a 'old' backup file, MAYBE"
+                     echo "you can replace a 2FA token that is working perfectly well by a 2FA"
+                     echo "token which isn't associated anymore with your logins."
+                     echo "It's up to you to decide if you want to keep the 'old' configuration"
+                     echo "or restore/overwrite your files."
                      echo
 
                      Overwrite "Would you like to continue and overwrite your tokens/config?" \

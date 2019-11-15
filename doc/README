@@ -19,7 +19,7 @@ What do you need to run 2FA-Auth?
 -- Essential softwares: GIT, GnuPG and OATHTOOL
 
 2FA-Auth can automatically install GnuPG and OATHTOOL, but if it fails, please,
-check how to install these packages according to your distroibution.
+check how to install these packages according to your distribution.
 
 This automatic method of package installation involves these package managers:
 
@@ -57,9 +57,6 @@ It's really easy to use this project. Open a terminal and type:
 $ cd /path/to/2FA-Auth/
 $ ./2FA-Auth.sh
 
-Optionally, you can type "./2FA-Auth.sh gencode" and generate 2FA authentication
-codes in your terminal without use 2FA-Auth main menu.
-
 Running 2FA-Auth for the first time, it's going to look for GnuPG and OATHTOOL,
 and it's going to ask you about your GPG IDs (KeyID & UserID) in order to encrypt
 decrypt your token(s).
@@ -69,10 +66,17 @@ Remember: GnuPG UserID is your e-mail, while GnuPG KeyID is part of your fingerp
 What you can do with 2FA-Auth?
 - Include, exclude, list and export all available services tokens set in your profile;
 - Generate "Two-Factor Authentication" login codes (using main menu or parameter);
-- Create and restore a backup with your settings.
+- Create and restore a backup with your settings;
+- Change your GnuPG key that is associated and used by 2FA-Auth.
 
 Read the PDF file "2FA-Auth/doc/How_to_use_2FA-Auth.pdf" to get more information
 on how to use 2FA-Auth.
+
+Optionally, you can type "./2FA-Auth.sh gencode" and generate 2FA authentication
+codes in your terminal without use 2FA-Auth main menu, and "./2FA-Auth changekey"
+to change your GnuPG key (and encryption). It's useful when you want to replace
+or update your keys.
+
 
 -----------------------
 4. 2FA tokens and codes
@@ -81,7 +85,7 @@ on how to use 2FA-Auth.
 Using 2FA code generator programs, like Google Authenticator(R), it's possible
 to generate "Two-Factor Authenticator (2FA)" codes (that change every minute),
 and these 2FA codes are used with your username and password, in order to provide
-a safe login to a site or service which uses Two-Factor Authenticatior.
+a safe login to a site or service which uses Two-Factor Authentication.
 
 But, instead of use your cellphone or tablet with 2FA code generator, you can
 use your terminal and run "2FA-Auth".
@@ -116,4 +120,4 @@ to generate the code (use the menu "Generate 2FA codes in order to login...").
 
 2FA-Auth has an option which is used to export your token, but why? Because you
 can use this token in other 2FA programs/scripts. It's useful when you want to
-use diferent programs to generate 2FA codes and log in the same site or service.
+use different programs to generate 2FA codes and log in the same site or service.

@@ -40,11 +40,14 @@ function MainMenu () {
         echo "2FA-Auth // Main menu"
         echo "====================="
         echo
-        echo "----------------------------------------------"
-        echo "| 2FA-Auth has 1 terminal parameter          |"
-        echo "| 'gencode' -- generate auth codes in a fast |"
-        echo "|              way without use the main menu |"
-        echo "----------------------------------------------"
+        echo "------------------------------------------------"
+        echo "| 2FA-Auth has 2 terminal parameters           |"
+        echo "|                                              |"
+        echo "| 'changekey' -- change GnuPG key/encryption   |"
+        echo "|                                              |"
+        echo "| 'gencode'   -- generate auth codes in a fast |"
+        echo "|                way without use the main menu |"
+        echo "------------------------------------------------"
         echo
         echo "[1] Add new 2FA auth tokens"
         echo "[2] Delete 2FA auth tokens"
@@ -54,6 +57,7 @@ function MainMenu () {
         echo "[6] Backup your tokens/config"
         echo "[7] Restore your tokens/config"
         echo
+        echo "[C] Change GnuPG encryption key"
         echo "[I] Information"
         echo "[Q] Quit"
         echo
@@ -69,6 +73,7 @@ function MainMenu () {
             5) Token Generate ;;
             6) Backup Create ;;
             7) Backup Restore ;;
+            C) ChangeMenu ;;
             I) Information ;;
             Q) break ;;
             *) echo "Invalid option!" ;;
@@ -76,13 +81,4 @@ function MainMenu () {
 
         PressAnyKey
     done
-}
-
-function Usage () {
-    echo "============="
-    echo "2FA-Auth help"
-    echo "============="
-    echo
-    echo "Hello, user! This menu can help you with 2FA-Auth additional parameter."
-    echo "2FA-Auth.sh gencode = Generate 2FA auth codes without use main menu."
 }
