@@ -23,13 +23,13 @@ function Information () {
     echo "2FA-Auth // Information"
     echo "======================="
     echo
-    echo "Version.............: $Version"
-    echo "Description.........: Generating 2FA auth codes in your terminal"
-    echo "Software license....: GNU GPL (General Public License) v3.0"
-    echo "Created by..........: Vinicius de Alencar (alencc1986)"
+    echo "Version............: $Version"
+    echo "Description........: Generating 2FA codes in your terminal"
+    echo "Software license...: GNU GPL (General Public License) v3.0"
+    echo "Created by.........: Vinicius de Alencar (alencc1986)"
     echo
-    echo "Your GnuPG UserID...: $( grep UserID $InfoFile | cut -d' ' -f2- )"
-    echo "Your GnuPG KeyID....: $( grep KeyID $InfoFile | cut -d' ' -f2 )"
+    echo "GnuPG User ID......: $( grep UserID $InfoFile | cut -d' ' -f2- )"
+    echo "GnuPG Key ID.......: $( grep KeyID $InfoFile | cut -d' ' -f2 )"
 }
 
 function MainMenu () {
@@ -59,6 +59,7 @@ function MainMenu () {
         echo
         echo "[C] Change GnuPG encryption key"
         echo "[I] Information"
+        echo "[R] Show README file"
         echo "[Q] Quit"
         echo
         read -p "Option: " -e -n1 Option
@@ -75,6 +76,7 @@ function MainMenu () {
             7) Backup Restore ;;
             C) ChangeMenu ;;
             I) Information ;;
+            R) clear ; less $README ; echo "End-of-file ($README)!" ;;
             Q) break ;;
             *) echo "Invalid option!" ;;
         esac

@@ -16,7 +16,7 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-Version="v2.1-0"
+Version="v2.2-0"
 
 ConfigDir=".config/2fa-auth"
 InfoFile="$HOME/$ConfigDir/2fa-auth.info"
@@ -29,8 +29,9 @@ BackupFile="2fa-config-backup.tar"
 ExportFile="2fa-tokens.txt"
 
 LibraryDir="$( dirname $0 )/library"
+README="$( dirname $0 )/doc/README"
 
-for Library in backup essential gnupg-encryption menu system token; do
+for Library in backup essential gnupg-encryption menu pkg-install system token; do
     if [[ -f $LibraryDir/$Library.sh ]]; then
         source $LibraryDir/$Library.sh
     else
@@ -50,7 +51,7 @@ else
         echo "2FA-Auth help"
         echo "============="
         echo
-        echo "Hello, user! This menu can help you with 2FA-Auth additional parameters."
+        echo "Hello! This menu can help you with 2FA-Auth additional parameters."
         echo "You don't need to use the main menu, just these 2 parameters."
         echo
         echo "2FA-Auth.sh changekey = Change GnuPG key/encryption"

@@ -27,7 +27,7 @@ function ErrorMsg () {
 
 function InstallationMsg () {
     case STATUS in
-        success) echo "SUCCESS! Packages installed with success!" ;;
+        success) echo "SUCCESS! Packages installed successfully!" ;;
 
            fail) echo "FAIL! Something wrong happened while installing GnuPG or OAth Toolkit!"
                  echo "Please, check what happened! Are you connected to the Internet?"

@@ -39,7 +39,8 @@ function InputData () {
 
     read -p "$Message " -e Input
     if [[ -z $Input ]]; then
-        echo "ATTENTION!!! You *MUST* type something!!!"
+        echo "ATTENTION!!! Empty input isn't valid!"
+        echo "You must type something!"
         InputData "$Message"
     fi
 }

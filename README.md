@@ -2,7 +2,7 @@
 
 ---
 
-![2FA](image/2FA-Auth.png "Generating 2FA login codes in your terminal")
+![2FA](image/2FA-Auth.png "Generating 2FA codes in your terminal")
 
 <br>
 

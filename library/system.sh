@@ -16,45 +16,6 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-function ErrorMsg () {
-    echo "Sorry, but 2FA-Auth couldn't determine which package manager is used by your system!"
-    echo
-    echo "It wasn't possible to automatically install GnuPG and/or OAth Toolkit"
-    echo "in your system! Please, install these programs and run 2FA-Auth again."
-    echo "Exiting..."
-    exit 1
-}
-
-function InstallationMsg () {
-    case STATUS in
-        success) echo "SUCCESS! Packages installed with success!" ;;
-
-           fail) echo "FAIL! Something wrong happened while installing GnuPG and OAth Toolkit!"
-                 echo "Please, check what happened! Exiting..."
-                 exit 1 ;;
-    esac
-}
-
-function InstallPackages () {
-    if [[ ! $( which gpg ) || ! $( which oathtool ) ]]; then
-        for PKGMAN in apt apt-get dnf emerge equo pacman urpmi yum zypper; do
-            [[ $( which $PKGMAN ) ]] && break || ErrorMsg
-        done
-
-        case $PKGMAN in
-            apt|apt-get) sudo $PKGMAN update && sudo $PKGMAN install -y gnupg2 oathtool ;;
-                dnf|yum) sudo $PKGMAN check-update && sudo $PKGMAN install -y gnupg2 oathtool ;;
-                 emerge) sudo emerge --sync && sudo emerge gnupg oath-toolkit ;;
-                   equo) sudo equo update && sudo equo install gnupg oathtool ;;
-                 pacman) sudo pacman -Sy && sudo pacman -Sy --noconfirm gnupg oathtool ;;
-                  urpmi) sudo urpmi.update -a && yes | sudo urpmi gnupg2 oath-toolkit ;;
-                 zypper) sudo zypper refresh && sudo zypper -n install gnupg oath-toolkit ;;
-        esac
-
-        [[ $( which gpg ) && $( which oathtool ) ]] && InstallationMsg success || InstallationMsg fail
-    fi
-}
-
 function UnifyTokens () {
     if [[ -d $HOME/$ConfigDir/token ]]; then
         if [[ $( find $HOME/$ConfigDir/token -type f -name *.token | wc -l ) > "0" ]]; then

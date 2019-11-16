@@ -30,8 +30,8 @@ function ChangeMenu () {
     echo "2FA-Auth // Change GnuPG encryption"
     echo "==================================="
     echo
-    echo "Your current UserID is \"$UserID\"."
-    echo "Your current KeyID is \"$KeyID\"."
+    echo "Current User ID in use is \"$UserID\"."
+    echo "Current Key ID in use is \"$KeyID\"."
     echo
     echo "Changing your GnuPG key, allows you to update/change"
     echo "the encryption in your 2FA-Auth tokens file. This is"

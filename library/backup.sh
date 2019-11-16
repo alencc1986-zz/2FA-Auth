@@ -47,7 +47,7 @@ function Backup () {
     case $1 in
          Create) if [[ ! -f $TokenFile ]]; then
                      echo "FAIL! No token file was found!"
-                     echo "It wasn't possible to backup your tokens!"
+                     echo "It isn't possible to backup your tokens!"
                  else
                      if [[ ! -f $HOME/$BackupFile ]]; then
                          echo "Saving your 2FA tokens and your 2FA-Auth config in '$HOME/$BackupFile'..."

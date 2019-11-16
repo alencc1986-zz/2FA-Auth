@@ -121,3 +121,6 @@ to generate the code (use the menu "Generate 2FA codes in order to login...").
 2FA-Auth has an option which is used to export your token, but why? Because you
 can use this token in other 2FA programs/scripts. It's useful when you want to
 use different programs to generate 2FA codes and log in the same site or service.
+
+
+Copyleft - Vinicius de Alencar (alencc1986) - 2019 - GNU GPL v3

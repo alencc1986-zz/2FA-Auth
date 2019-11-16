@@ -54,7 +54,7 @@ function TokenAdd () {
     echo "to be replaced using underlines and lowercase letter. For"
     echo "example: '2FA.Auth Code' >>> '2fa_auth_code'"
     echo
-    InputData "Type the service name you want to add (type 'C' to [C]ANCEL)"
+    InputData "Type the service name you want to add (type 'C' to [C]ANCEL):"
 
     if [[ $( echo ${Input,,} ) = "c" ]]; then
         echo "Canceling..."
@@ -90,7 +90,7 @@ function TokenDel () {
     if [[ ! -f $TokenFile ]]; then
         echo "ATTENTION! There are no services to be excluded!"
     else
-        echo "Select a service to be deleted (type 'A' to delete [A]LL or 'C' to [C]ANCEL)"
+        echo "Select a service to be deleted (type 'A' to delete [A]LL or 'C' to [C]ANCEL):"
         echo
 
         declare -a Array
