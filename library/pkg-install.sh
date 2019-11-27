@@ -25,27 +25,22 @@ function ErrorMsg () {
     exit 1
 }
 
-function InstallationMsg () {
-    case STATUS in
-        success) echo "SUCCESS! Packages installed successfully!" ;;
-
-           fail) echo "FAIL! Something wrong happened while installing GnuPG or OAth Toolkit!"
-                 echo "Please, check what happened! Are you connected to the Internet?"
-                 echo "Exiting..."
-                 exit 1 ;;
-    esac
-}
-
 function InstallPackages () {
     if [[ ! $( which gpg ) || ! $( which oathtool ) ]]; then
+        echo "ATTENTION! GnuPG and/or OATH Toolkit is/are NOT installed in your system!"
+        echo "Checking which package manager your system is using. Please, wait!"
         for PKGMAN in apt apt-get dnf emerge equo pacman urpmi yum zypper; do
             [[ $( which $PKGMAN ) ]] && break || ErrorMsg
         done
 
+        echo
+        echo "Checking if you're online. Please, wait!"
         if [[ ! $( ping -c 4 www.google.com ) ]]; then
             echo "ATTENTION! It seems you're offline!"
             echo "Check your network settings and your Internet connection."
         else
+            echo
+            echo "Installing GnuPG and/or OATH Toolkit. Please, wait!"
             case $PKGMAN in
                 apt|apt-get) sudo $PKGMAN update && sudo $PKGMAN install -y gnupg2 oathtool ;;
                     dnf|yum) sudo $PKGMAN check-update && sudo $PKGMAN install -y gnupg2 oathtool ;;

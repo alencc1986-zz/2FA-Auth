@@ -16,7 +16,7 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-Version="v2.2-0"
+Version="v2.3-0"
 
 ConfigDir=".config/2fa-auth"
 InfoFile="$HOME/$ConfigDir/2fa-auth.info"
