@@ -77,7 +77,7 @@ function TokenAdd () {
 function TokenDel () {
     function Remove () {
         DecryptToken | sed "/$Service/d" > $TokenFileTXT && \
-        { [[ $( cat $TokenFileTXT | wc -l ) > "0" ]] && EncryptToken || rm -rf $TokenFile ; } && \
+        { [[ $( cat $TokenFileTXT | wc -l ) > "0" ]] && EncryptToken || rm -rf $TokenFile ; }
         rm -rf $TokenFileTXT
     }
 
@@ -154,6 +154,68 @@ function TokenList () {
     fi
 }
 
+function TokenRename () {
+    clear
+    echo "========================"
+    echo "2FA-Auth // Rename token"
+    echo "========================"
+    echo
+
+    if [[ ! -f $TokenFile ]]; then
+        echo "ATTENTION! There is nothing to be renamed!"
+    else
+        echo "Listing all available services:"
+        echo
+
+        declare -a Array
+        Array=( $( DecryptToken | cut -d"|" -f1 ) )
+        Counter=
+        Limit=$( DecryptToken | wc -l )
+
+        for Number in $( seq 1 1 $Limit ); do
+            let Index=$Number-1
+            echo "[$Number] ${Array[$Index]}"
+            [[ $Number = ${#Array[*]} ]] && Counter=$Counter$Number || Counter=$Counter$Number"|"
+        done
+
+        Counter="+($Counter)"
+
+        echo
+        read -p "Which service do you want to rename? (type 'C' to [C]ANCEL) " -e -n$( echo ${#Array[*]} | wc -L ) CaseOption
+        CaseOption=${CaseOption,,}
+
+        shopt -s extglob
+        case $CaseOption in
+            $Counter) Index=$CaseOption-1
+                      Service=${Array[$Index]}
+
+                      echo "You selected: $Service"
+                      echo
+                      InputData "Type the new name for this service (type 'C' to [C]ANCEL):"
+
+                      case ${Input,,} in
+                          c|cancel) echo "Canceling..." ;;
+
+                                 *) echo "Renaming \"$Service\"..."
+                                    NewService=$( echo ${Input,,} | sed "s| \+|_|g; s|\.\+|_|g" )
+
+                                    DecryptToken > $TokenFileTXT && \
+                                    grep -v "$Service" $TokenFileTXT > $TempFile && \
+                                    grep -i "$Service" $TokenFileTXT | sed "s|^$Service\||$NewService\||g" >> $TempFile && \
+                                    sort $TempFile > $TokenFileTXT &&\
+                                    EncryptToken && \
+                                    echo "Service \"$Service\" was renamed as \"$NewService\"!" || echo "ERROR! Something wrong happened while renaming \"$Service\"!"
+
+                                    rm -rf $TokenFileTXT $TempFile ;;
+                      esac ;;
+
+                   c) echo "Canceling..." ;;
+                   *) echo "Invalid option..." ;;
+        esac
+        shopt -u extglob
+    fi
+}
+
 function TokenExport () {
     function ExportToFile () {
         cat /dev/null > $TempFile
@@ -218,8 +280,8 @@ function TokenGenerate () {
 
         let CursorEndPosition=$( DecryptToken | wc -l )+7
 
-        echo "Generating 2FA codes for all available services! Please, wait..."
-        echo "These codes are updated every 60 seconds."
+        echo "Generating 2FA codes for all available services..."
+        echo "(( These codes are updated every 60 seconds. ))"
         echo
 
         while [ "$KeyPressed" = "" ]; do
@@ -261,6 +323,7 @@ function Token () {
              Add) TokenAdd ;;
              Del) TokenDel ;;
             List) TokenList ;;
+          Rename) TokenRename ;;
           Export) TokenExport ;;
         Generate) TokenGenerate ;;
     esac
