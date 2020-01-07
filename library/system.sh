@@ -64,6 +64,7 @@ function SystemCheck () {
 
     [[ $( $GPG --fingerprint | wc -l ) = "0" ]] && { echo "ERROR! No GnuPG key(s) found in your profile!" ; exit 1 ; }
 
+    [[ ! -d $HOME/$ConfigDir ]] && mkdir -p $HOME/$ConfigDir
     cd $HOME ; [[ -f $HOME/$ConfigDir/2fa-info ]] && mv $HOME/$ConfigDir/2fa-info $InfoFile
 
     if [[ ! -f $InfoFile ]]; then
