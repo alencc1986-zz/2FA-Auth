@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 #  2FA-Auth // Generating '2FA' codes in your terminal
-#  Copyright (C) 2019  Vinicius de Alencar
+#  Copyright (C) 2020  Vinicius de Alencar
 #
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by

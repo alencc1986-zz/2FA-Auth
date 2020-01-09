@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 #  2FA-Auth // Generating '2FA' codes in your terminal
-#  Copyright (C) 2019  Vinicius de Alencar
+#  Copyright (C) 2020  Vinicius de Alencar
 #
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@ function Information () {
     echo "2FA-Auth // Information"
     echo "======================="
     echo
-    echo "Version............: $Version"
+    echo "Version............: 2.5-0"
     echo "Description........: Generating 2FA codes in your terminal"
     echo "Software license...: GNU GPL (General Public License) v3.0"
     echo "Created by.........: Vinicius de Alencar (alencc1986)"
@@ -60,7 +60,6 @@ function MainMenu () {
         echo
         echo "[C] Change GnuPG encryption key"
         echo "[I] Information"
-        echo "[R] Show README file"
         echo "[Q] Quit"
         echo
         read -p "Option: " -e -n1 Option
@@ -78,7 +77,6 @@ function MainMenu () {
             8) Backup Restore ;;
             C) ChangeMenu ;;
             I) Information ;;
-            R) clear ; less $README ; echo "End-of-file ($README)!" ;;
             Q) break ;;
             *) echo "Invalid option!" ;;
         esac

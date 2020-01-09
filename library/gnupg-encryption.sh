@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 #  2FA-Auth // Generating '2FA' codes in your terminal
-#  Copyright (C) 2019  Vinicius de Alencar
+#  Copyright (C) 2020  Vinicius de Alencar
 #
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@ function ChangeGPG () {
     $GPG --quiet --local-user $UserID --recipient $KeyID --yes --output $TokenFileTXT --decrypt $TokenFile && \
     $GPG --quiet --local-user $NewUserID --recipient $NewKeyID --yes --output $TokenFile --encrypt $TokenFileTXT && \
     mv "$InfoFile" "$InfoFile"-old && \
-    { echo "UserID $NewUserID" > $InfoFile && echo "KeyID $NewKeyID" >> $InfoFile ; }
+    { echo "UserID $NewUserID" > $InfoFile && echo "KeyID $NewKeyID" >> $InfoFile ; } && \
     rm -rf "$TokenFileTXT" "$InfoFile"-old
 }
 
@@ -45,11 +45,15 @@ function ChangeMenu () {
     echo "-------------------------------------------------"
     echo
 
-    InputData "Type/copy-paste your new UserID (press [C] to CANCEL):" ; NewUserID=$( echo ${Input,,} | sed 's| \+||g' )
+    InputData "Type/copy-paste your new UserID (press [C] to CANCEL):"
+    NewUserID=$( echo ${Input,,} | sed 's| \+||g' )
+
     if [[ $( echo ${Input,,} ) = "c" ]]; then
         echo "Cancelling..."
     else
-        InputData "Type/copy-paste your new KeyID (press [C] to CANCEL):" ; NewKeyID=$( echo ${Input^^} | sed 's| \+||g' )
+        InputData "Type/copy-paste your new KeyID (press [C] to CANCEL):"
+        NewKeyID=$( echo ${Input^^} | sed 's| \+||g' )
+
         if [[ $( echo ${Input,,} ) = "c" ]]; then
             echo "Cancelling..."
         else

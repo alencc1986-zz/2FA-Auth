@@ -16,8 +16,6 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-Version="v2.4-1"
-
 ConfigDir=".config/2fa-auth"
 InfoFile="$HOME/$ConfigDir/2fa-auth.info"
 
@@ -25,18 +23,16 @@ TempFile="$HOME/$ConfigDir/temp-tokens.txt"
 TokenFile="$HOME/$ConfigDir/2fa-tokens.gpg"
 TokenFileTXT="$HOME/$ConfigDir/2fa-tokens.txt"
 
-BackupFile="2fa-config-backup.tar"
 ExportFile="2fa-tokens.txt"
 
 LibraryDir="$( dirname $0 )/library"
-README="$( dirname $0 )/doc/README"
-
 for Library in backup essential gnupg-encryption menu pkg-install system token; do
     if [[ -f $LibraryDir/$Library.sh ]]; then
         source $LibraryDir/$Library.sh
     else
         echo "ERROR! The library '$Library' is missing!"
         echo "Check what happened with it!"
+
         exit 1
     fi
 done

@@ -61,4 +61,4 @@ GPG key is created (or imported) into ***$HOME/.gnupg/*** while GPG IDs are part
 <br>
 
 ---
-*Created by Vinicius de Alencar (alencc1986) - 2019 - GNU GPLv3.0*
+*Created by Vinicius de Alencar (alencc1986) - 2020 - GNU GPLv3.0*
