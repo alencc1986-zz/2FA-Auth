@@ -16,16 +16,8 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-ConfigDir=".config/2fa-auth"
-InfoFile="$HOME/$ConfigDir/2fa-auth.info"
-
-TempFile="$HOME/$ConfigDir/temp-tokens.txt"
-TokenFile="$HOME/$ConfigDir/2fa-tokens.gpg"
-TokenFileTXT="$HOME/$ConfigDir/2fa-tokens.txt"
-
-ExportFile="2fa-tokens.txt"
-
 LibraryDir="$( dirname $0 )/library"
+
 for Library in backup essential gnupg-encryption menu pkg-install system token; do
     if [[ -f $LibraryDir/$Library.sh ]]; then
         source $LibraryDir/$Library.sh
@@ -36,6 +28,15 @@ for Library in backup essential gnupg-encryption menu pkg-install system token; 
         exit 1
     fi
 done
+
+ConfigDir=".config/2fa-auth"
+
+ExportFile="2fa-tokens.txt"
+InfoFile="$HOME/$ConfigDir/2fa-auth.info"
+
+TempFile="$HOME/$ConfigDir/temp-tokens.txt"
+TokenFile="$HOME/$ConfigDir/2fa-tokens.gpg"
+TokenFileTXT="$HOME/$ConfigDir/2fa-tokens.txt"
 
 SystemCheck
 

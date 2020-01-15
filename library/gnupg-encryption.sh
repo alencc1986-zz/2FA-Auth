@@ -16,12 +16,44 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+function ReplaceInfoFile () {
+    UserID=$1
+    KeyID=$2
+
+    echo "UserID $UserID" > $InfoFile
+    echo "KeyID $KeyID" >> $InfoFile
+}
+
+function RestoreGPG () {
+    UserID=$1
+    KeyID=$2
+    NewUserID=$3
+    NewKeyID=$4
+
+    echo "UserID $UserID" > $InfoFile
+    echo "KeyID $KeyID" >> $InfoFile
+
+    if [[ $ENCRYPTSTATUS = "OK" ]]; then
+        $GPG --quiet --local-user $NewUserID --recipient $NewKeyID --yes --output $TokenFileTXT --decrypt $TokenFile 2> /dev/null && \
+        $GPG --quiet --local-user $UserID --recipient $KeyID --yes --output $TokenFile --encrypt $TokenFileTXT 2> /dev/null && \
+        echo "Old encryption was used to re-encrypt your tokens!" || echo "It wasn't possible to re-encrypt your tokens using your old encryption!"
+    fi
+}
+
 function ChangeGPG () {
-    $GPG --quiet --local-user $UserID --recipient $KeyID --yes --output $TokenFileTXT --decrypt $TokenFile && \
-    $GPG --quiet --local-user $NewUserID --recipient $NewKeyID --yes --output $TokenFile --encrypt $TokenFileTXT && \
-    mv "$InfoFile" "$InfoFile"-old && \
-    { echo "UserID $NewUserID" > $InfoFile && echo "KeyID $NewKeyID" >> $InfoFile ; } && \
-    rm -rf "$TokenFileTXT" "$InfoFile"-old
+    echo "Changing your GPG key. Please, wait..."
+
+    $GPG --quiet --local-user $UserID --recipient $KeyID --yes --output $TokenFileTXT --decrypt $TokenFile 2> /dev/null && DECRYPTSTATUS="OK" && \
+    $GPG --quiet --local-user $NewUserID --recipient $NewKeyID --yes --output $TokenFile --encrypt $TokenFileTXT 2> /dev/null && ENCRYPTSTATUS="OK" && \
+    rm -rf "$TokenFileTXT" 2> /dev/null
+
+    if [[ $DECRYPTSTATUS = "OK" ]]&&[[ $ENCRYPTSTATUS = "OK" ]]; then
+        echo "SUCCESS! Your GnuPG key has been changed!"
+        ReplaceInfoFile $NewUserID $NewKeyID
+    else
+        echo "FAIL! Something wrong happened while changing you GnuPG key!"
+        RestoreGPG $UserID $KeyID $NewUserID $NewKeyID
+    fi
 }
 
 function ChangeMenu () {
@@ -45,28 +77,36 @@ function ChangeMenu () {
     echo "-------------------------------------------------"
     echo
 
-    InputData "Type/copy-paste your new UserID (press [C] to CANCEL):"
+    InputData "Type/copy-paste your new UserID (e-mail address) (press [C] to CANCEL):"
     NewUserID=$( echo ${Input,,} | sed 's| \+||g' )
 
     if [[ $( echo ${Input,,} ) = "c" ]]; then
         echo "Cancelling..."
     else
-        InputData "Type/copy-paste your new KeyID (press [C] to CANCEL):"
+        InputData "Type/copy-paste your new KeyID (fingerprint) (press [C] to CANCEL):"
         NewKeyID=$( echo ${Input^^} | sed 's| \+||g' )
 
         if [[ $( echo ${Input,,} ) = "c" ]]; then
             echo "Cancelling..."
         else
-            echo
             if [[ $( $GPG --list-keys $NewUserID | grep $NewKeyID ) ]]; then
-                ConfirmAction "Are you sure that you want to change your GnuPG encryption?" \
-                    ChangeGPG \
-                    "GnuPG encryption changed!" \
-                    "Something wrong happened while changing your encryption!" \
-                    "Keeping your 'old' GnuPG encryption!"
+                while true; do
+                    echo
+                    read -p "Are you sure that you want to change your GnuPG encryption? [y/N] " -e -n1 ANSWER
+                    echo
+
+                    [[ -z $ANSWER ]] && ANSWER="n" || ANSWER=${ANSWER,,}
+
+                    case $ANSWER in
+                        y) ChangeGPG ; break ;;
+                        n) echo "Keeping your 'old' GPG key!" ; break ;;
+                        *) echo "ERROR: Invalid option!" ;;
+                    esac
+                done
             else
                 echo "ERROR! You typed (or copy-pasted) IDs that belong to different GnuPG keys!"
                 echo "Please, type/copy-paste IDs from the same key!"
+                PressAnyKey
                 ChangeMenu
             fi
         fi

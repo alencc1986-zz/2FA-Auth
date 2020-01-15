@@ -40,9 +40,12 @@ function InstallPackages () {
         if [[ ! $( ping -c 4 www.google.com ) ]]; then
             echo "ATTENTION! It seems you're offline!"
             echo "Check your network settings and your Internet connection."
+
+            exi 1
         else
             echo
             echo "Installing GnuPG and/or OATH Toolkit. Please, wait!"
+
             case $PKGMAN in
                 apt|apt-get) sudo $PKGMAN update && sudo $PKGMAN install -y gnupg2 oathtool ;;
                     dnf|yum) sudo $PKGMAN check-update && sudo $PKGMAN install -y gnupg2 oathtool ;;
@@ -52,6 +55,15 @@ function InstallPackages () {
                       urpmi) sudo urpmi.update -a && yes | sudo urpmi gnupg2 oath-toolkit ;;
                      zypper) sudo zypper refresh && sudo zypper -n install gnupg oath-toolkit ;;
             esac
+
+            if [[ $? = "0" ]]; then
+                echo "Installation completed with success!"
+            else
+                echo "Something wrong happened while installing GnuPG and/or OAth Toolkit!"
+                exit 1
+            fi
+
+            PressAnyKey
         fi
     fi
 }

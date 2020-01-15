@@ -34,12 +34,6 @@ This automatic method of package installation involves these package managers:
 
 The next step is that you **MUST** create or import *GPG Keys* in your profile. They are used by GnuPG to encrypt and decrypt your tokens.
 
-If you don't know how to use GnuPG, feel free to read these articles at ***Reddit r/linux*** forum clicking in the links bellow.
-
-[[Tutorial for beginners] How to install and use GnuPG on GNU/Linux](https://www.reddit.com/r/linux/comments/creb29/tutorial_for_beginners_how_to_install_and_use/)
-
-[[Tutorial for beginners] GnuPG: how to export, import, delete and revoke your keys](https://www.reddit.com/r/linux/comments/ct7yjr/tutorial_for_beginners_gnupg_how_to_export_import/)
-
 <br>
 
 **PDF FILE: "2FA-Auth/doc/How_to_use_2FA-Auth.pdf"**

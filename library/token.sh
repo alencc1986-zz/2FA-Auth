@@ -34,6 +34,7 @@ function TokenAdd () {
             Token="$Input"
 
             [[ -f $TokenFile ]] && DecryptToken > $TempFile
+
             echo "$Service|$Token" >> $TempFile && \
             sort $TempFile > $TokenFileTXT
 

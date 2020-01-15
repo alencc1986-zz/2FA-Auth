@@ -16,7 +16,7 @@
 What do you need to run 2FA-Auth?
 
 -- Operating System: any GNU/Linux distribution with BASH interpreter
--- Essential softwares: GIT, GnuPG and OATHTOOL
+-- Essential softwares: GnuPG and OATHTOOL
 
 2FA-Auth can automatically install GnuPG and OATHTOOL, but if it fails, please,
 check how to install these packages according to your distribution.
@@ -36,14 +36,7 @@ This automatic method of package installation involves these package managers:
 It's really essential to create/import your GnuPG keys in your profile, because
 they're going to be used to encrypt/decrypt 2FA tokens. The email used to create
 your GnuPG key is your UserID and part of the fingerprint (the last 16 digits or
-the last 4 blocks of digits) is your KeyID. If you have no idea on how to use
-GnuPG, it's recommended to read these Reddit articles bellow.
-
-[Tutorial for beginners] How to install and use GnuPG on GNU/Linux
-https://www.redd.it/creb29/
-
-[Tutorial for beginners] GnuPG: how to export, import, delete and revoke your keys
-https://www.redd.it/ct7yjr/
+the last 4 blocks of digits) is your KeyID.
 
 If you need more information about GnuPG, use forums and other sites.
 
