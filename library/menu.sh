@@ -1,21 +1,5 @@
 #!/usr/bin/env bash
 
-#  2FA-Auth // Generating '2FA' codes in your terminal
-#  Copyright (C) 2020  Vinicius de Alencar
-#
-#  This program is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation, either version 3 of the License, or
-#  (at your option) any later version.
-#
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public License
-#  along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 function Information () {
     clear
 
@@ -23,13 +7,11 @@ function Information () {
     echo "2FA-Auth // Information"
     echo "======================="
     echo
-    echo "Version............: 2.6-0"
+    echo "Version............: 3.0-0"
     echo "Description........: Generating 2FA codes in your terminal"
-    echo "Software license...: GNU GPL (General Public License) v3.0"
     echo "Created by.........: Vinicius de Alencar (alencc1986)"
     echo
-    echo "GnuPG User ID......: $( grep UserID $InfoFile | cut -d' ' -f2- )"
-    echo "GnuPG Key ID.......: $( grep KeyID $InfoFile | cut -d' ' -f2 )"
+    echo "GnuPG User ID......: $( awk '{ print $2 }' ${InfoFile} )"
 }
 
 function MainMenu () {
@@ -40,14 +22,14 @@ function MainMenu () {
         echo "2FA-Auth // Main menu"
         echo "====================="
         echo
-        echo "------------------------------------------------"
-        echo "| 2FA-Auth has 2 terminal parameters           |"
-        echo "|                                              |"
-        echo "| 'changekey' -- change GnuPG key/encryption   |"
-        echo "|                                              |"
-        echo "| 'gencode'   -- generate auth codes in a fast |"
-        echo "|                way without use the main menu |"
-        echo "------------------------------------------------"
+        echo "----------------------------------------------"
+        echo "| 2FA-Auth has 2 terminal parameters         |"
+        echo "|                                            |"
+        echo "| 'changekey' -- change GnuPG key/encryption |"
+        echo "|                                            |"
+        echo "| 'gencode'   -- generate auth codes without |"
+        echo "|                use the main menu           |"
+        echo "----------------------------------------------"
         echo
         echo "[1] Add new 2FA auth tokens"
         echo "[2] Delete 2FA auth tokens"
@@ -66,7 +48,7 @@ function MainMenu () {
 
         Option=${Option^^}
 
-        case $Option in
+        case ${Option} in
             1) Token Add ;;
             2) Token Del ;;
             3) Token List ;;

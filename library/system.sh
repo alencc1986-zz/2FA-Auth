@@ -1,56 +1,50 @@
 #!/usr/bin/env bash
 
-#  2FA-Auth // Generating '2FA' codes in your terminal
-#  Copyright (C) 2020  Vinicius de Alencar
-#
-#  This program is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation, either version 3 of the License, or
-#  (at your option) any later version.
-#
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public License
-#  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+function InstallPackages () {
+    function ErrorMsg () {
+        echo "ATTENTION! It wasn't possible to determine your system's package manager!"
+        echo
+        echo "It wasn't possible to automatically install GnuPG or OAth Toolkit in"
+        echo "your system! Please, install these programs and run 2FA-Auth again."
+        echo "Exiting..."
+        exit 1
+    }
 
-function UnifyTokens () {
-    if [[ -d $HOME/$ConfigDir/token ]]; then
-        if [[ $( find $HOME/$ConfigDir/token -type f -name *.token | wc -l ) > "0" ]]; then
-            echo "Gathering all 2FA tokens into one single file. Please, wait!"
+    if [[ ! $( command -v gpg ) || ! $( command -v oathtool ) ]]; then
+        echo "ATTENTION! GnuPG and/or OATH Toolkit is/are NOT installed in your system!"
+        echo "Checking which package manager your system is using. Please, wait!"
+
+        for PkgMan in "apt" "apt-get" "dnf" "emerge" "equo" "pacman" "urpmi" "yum" "zypper" "NONE"; do
+            [[ $( command -v ${PkgMan} ) ]] && break
+        done
+
+        echo
+        echo "Checking if you're online. Please, wait!"
+        if [[ ! $( ping -c 4 www.google.com ) ]]; then
+            echo "ATTENTION! It seems you're offline!"
+            echo "Check your network settings and your Internet connection."
+            exi 1
+        else
             echo
+            echo "Installing GnuPG and/or OATH Toolkit. Please, wait!"
 
-            cat /dev/null > $TempFile
+            case ${PkgMan} in
+                apt|apt-get) sudo ${PkgMan} update ; sudo ${PkgMan} install -y gnupg2 oathtool ;;
+                    dnf|yum) sudo ${PkgMan} check-update ; sudo ${PkgMan} install -y gnupg2 oathtool ;;
+                     emerge) sudo emerge --sync ; sudo emerge gnupg oath-toolkit ;;
+                       equo) sudo equo update ; sudo equo install gnupg oathtool ;;
+                     pacman) sudo pacman -Sy ; sudo pacman -Sy --noconfirm gnupg oathtool ;;
+                      urpmi) sudo urpmi.update -a ; yes | sudo urpmi gnupg2 oath-toolkit ;;
+                     zypper) sudo zypper refresh ; sudo zypper -n install gnupg oath-toolkit ;;
+                       NONE) ErrorMsg ;;
+            esac
 
-            AmountOfTokens=$( find $HOME/$ConfigDir/token -type f -name *.token | wc -l )
-            Counter=1
-
-            for Service in $( basename -a -s .token $( find $HOME/$ConfigDir/token -type f -name *.token | sort ) ); do
-                echo -n "Processing file $Counter of $AmountOfTokens (service: $Service)... "
-
-                Token=$( $GPG --quiet --local-user $KeyID --recipient $UserID --decrypt $HOME/$ConfigDir/token/$Service.token )
-                if [[ $? != "0" ]]; then
-                    echo "FAIL"
-                    echo
-                    echo "Something wrong happened!"
-                    echo "Did you type your GnuPG password correctly?"
-
-                    exit 1
-                else
-                    echo "$Service|$Token" >> $TempFile
-                    let Counter+=1
-                    echo "done!"
-                fi
-            done
-
-            $GPG --local-user $KeyID --recipient $UserID --yes --output $TokenFile --encrypt $TempFile
-            rm -rf $TempFile $HOME/$ConfigDir/token
-
-            echo
-            echo "Tokens were unified with success!"
-            echo "New token file is: $TokenFile"
+            if [[ $? = "0" ]]; then
+                echo "Installation completed with success!"
+            else
+                echo "Something wrong happened while installing GnuPG and/or OAth Toolkit!"
+                exit 1
+            fi
 
             PressAnyKey
         fi
@@ -60,16 +54,20 @@ function UnifyTokens () {
 function SystemCheck () {
     InstallPackages
 
-    GPG=$( which gpg )
-    OATHTOOL=$( which oathtool )
+    GPG=$( command -v gpg )
+    OATHTOOL=$( command -v oathtool )
 
-    [[ $( $GPG --fingerprint | wc -l ) = "0" ]] && { echo "ERROR! No GnuPG key(s) found in your profile!" ; exit 1 ; }
+    if [[ $( ${GPG} --list-keys | wc -l ) = "0" ]]; then
+        echo "ERROR! No GnuPG key(s) found in your profile!"
+        exit 1
+    fi
 
-    [[ ! -d $HOME/$ConfigDir ]] && mkdir -p $HOME/$ConfigDir
+    [[ ! -d $HOME/${ConfigDir} ]] && mkdir -p $HOME/${ConfigDir}
+    [[ -f $HOME/${ConfigDir}/2fa-info ]] && mv $HOME/${ConfigDir}/2fa-info ${InfoFile}
+
     cd $HOME
-    [[ -f $HOME/$ConfigDir/2fa-info ]] && mv $HOME/$ConfigDir/2fa-info $InfoFile
 
-    if [[ ! -f $InfoFile ]]; then
+    if [[ ! -f ${InfoFile} ]]; then
         while true; do
             clear
 
@@ -77,41 +75,35 @@ function SystemCheck () {
             echo "2FA-Auth // Initial configuration"
             echo "================================="
             echo
-            echo "It's mandatory to inform your GnuPG IDs (User ID and Key ID)."
-            echo "These IDs are essential to encrypt/decrypt your 2FA tokens."
-            echo "User ID is your email address which is registered in your GnuPG"
-            echo "key, while Key ID is part of your fingerprint (you may look for"
-            echo "the last 16 digits or last 4 blocks of number in your GnuPG key"
-            echo "fingerprint)."
+            echo "It's mandatory to inform your GnuPG ID (User ID). This ID is"
+            echo "essential to encrypt/decrypt your 2FA tokens. User ID is your"
+            echo "email address which is registered in your GnuPG key."
             echo "If you have 2 or more keys/subkeys, choose 1 of them and input"
-            echo "IDs when prompted. About subkeys, it's possible to have many en-"
+            echo "ID when prompted. About subkeys, it's possible to have many en-"
             echo "cryption subkeys included/associated with your main key."
-            echo "ATTENTION: both IDs *MUST* belong to the same GnuPG Key!"
             echo
             echo "Listing your available key(s):"
             echo
             echo "-------------------------------------------------"
-            $GPG --fingerprint | grep -v "pub\|sub\|-----" | sed 's/uid//g; s/ \+/ /g; s/^ //g; $ d'
+            ListGPGkeys
             echo "-------------------------------------------------"
             echo
 
-            read -p "Type/copy-paste your User ID (e-mail address): " -e UserID ; UserID=$( echo ${UserID,,} | sed 's| \+||g' ) 
-            read -p "Type/copy-paste your Key ID (fingerprint)....: " -e KeyID ; KeyID=$( echo ${KeyID^^} | sed 's| \+||g' )
+            read -p "Type/copy-paste your User ID (e-mail address): " -e UserID 
+            UserID=$( echo ${UserID,,} | sed 's| \+||g' ) 
 
 
-            if [[ $( $GPG --list-keys $UserID | grep $KeyID ) ]]; then
-                echo "UserID $UserID" > $InfoFile
-                echo "KeyID $KeyID" >> $InfoFile
+            if [[ $( ${GPG} --list-keys ${UserID} ) ]]; then
+                echo "UserID ${UserID}" > ${InfoFile}
                 break
             else
-                echo "ERROR! You typed/included IDs that belong to different GnuPG keys!"
+                echo "ERROR! You typed/included an invalid User ID!"
                 PressAnyKey
             fi
         done
     else
-        UserID=$( grep "UserID" $InfoFile | cut -d' ' -f2- )
-        KeyID=$( grep "KeyID" $InfoFile | cut -d' ' -f2 )
+        UserID=$( grep "UserID" ${InfoFile} | cut -d' ' -f2- )
     fi
 
-    UnifyTokens
+    Token Unify
 }

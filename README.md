@@ -6,7 +6,7 @@
 
 <br>
 
-***2FA-Auth*** is a BASH script that provides a user-friendly way to generate *"Two-Factor Authentication (2FA)"* code. It works like Google Authenticator® and similar programs, but you can use your GNU/Linux terminal, instead of cellphone with any authentication software.
+***2FA-Auth*** is a BASH script that provides a user-friendly way to generate *"Two-Factor Authentication (2FA)"* code. It works like Google Authenticator® and similar programs, but you can use your GNU/Linux terminal, instead of your cellphone.
 
 For more information, look for *"Two-Factor Authentication"* in sites or forums.
 
@@ -44,15 +44,11 @@ It's a simple "how to use" manual, but it helps you A LOT!
 
 <br>
 
-**Where does 2FA-Auth save my tokens and GnuPG IDs?**
+**Where does 2FA-Auth save my tokens and GnuPG ID?**
 
-First things first, do **NOT** confuse *GnuPG ID* with *GnuPG Key*.
+GPG key is created (or imported) into ***$HOME/.gnupg/*** while GPG ID is part of your key (UserID) and 2FA-Auth asks for it. Your UserID is the e-mail used to create your key.
 
-GPG key is created (or imported) into ***$HOME/.gnupg/*** while GPG IDs are parts of your key (UserID and KeyID) and 2FA-Auth asks for them. KeyID is the group of last 16 digits of your GPG key (fingerprint), while your UserID is the e-mail used to create your key.
-
-***2FA-Auth*** saves your 2FA token(s) in this directory: ***$HOME/.config/2fa-auth/*** and your GnuPG IDs (UserID and KeyID) are saved in ***$HOME/.config/2fa-auth/2fa-auth.info***
+***2FA-Auth*** saves your 2FA token(s) in this directory: ***$HOME/.config/2fa-auth/*** and your GnuPG UserID is saved in ***$HOME/.config/2fa-auth/2fa-auth.info***
 
 <br>
-
----
-*Created by Vinicius de Alencar (alencc1986) - 2020 - GNU GPLv3.0*
+Copyleft - Vinicius de Alencar (alencc1986) – 2020
