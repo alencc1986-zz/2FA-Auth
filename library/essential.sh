@@ -26,7 +26,6 @@ function InputData () {
     if [[ -z ${Input} ]]; then
         echo "ATTENTION!!! Empty input isn't valid!"
         echo "You must type something!"
-
         InputData "${Message}"
     fi
 }

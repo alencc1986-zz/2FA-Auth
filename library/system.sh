@@ -89,8 +89,8 @@ function SystemCheck () {
             echo "-------------------------------------------------"
             echo
 
-            read -p "Type/copy-paste your User ID (e-mail address): " -e UserID 
-            UserID=$( echo ${UserID,,} | sed 's| \+||g' ) 
+            read -p "Type/copy-paste your User ID (e-mail address): " -e UserID
+            UserID=$( echo ${UserID,,} | sed 's| \+||g' )
 
 
             if [[ $( ${GPG} --list-keys ${UserID} ) ]]; then
@@ -104,6 +104,4 @@ function SystemCheck () {
     else
         UserID=$( grep "UserID" ${InfoFile} | cut -d' ' -f2- )
     fi
-
-    Token Unify
 }

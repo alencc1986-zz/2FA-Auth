@@ -7,7 +7,7 @@ function Information () {
     echo "2FA-Auth // Information"
     echo "======================="
     echo
-    echo "Version............: 3.0-0"
+    echo "Version............: 3.1-0"
     echo "Description........: Generating 2FA codes in your terminal"
     echo "Created by.........: Vinicius de Alencar (alencc1986)"
     echo

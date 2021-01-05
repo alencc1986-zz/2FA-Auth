@@ -15,7 +15,6 @@ done
 ConfigDir=".config/2fa-auth"
 BackupFile="2fa-config-backup.tar"
 ExportFile="2fa-tokens.txt"
-
 InfoFile="$HOME/${ConfigDir}/2fa-auth.info"
 TempFile="$HOME/${ConfigDir}/temp-tokens.txt"
 TokenFile="$HOME/${ConfigDir}/2fa-tokens.gpg"

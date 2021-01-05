@@ -13,8 +13,8 @@ function RestoreGPG () {
 
     if [[ ${EncryptStatus} = "OK" ]]; then
         ${GPG} --quiet --yes --output ${TokenFileTXT} --decrypt ${TokenFile} 2> /dev/null && \
-        ${GPG} --quiet --recipient ${UserID} --yes --output ${TokenFile} --encrypt ${TokenFileTXT} 2> /dev/null && \
-        echo "Old encryption was used to re-encrypt your tokens!" || echo "It wasn't possible to re-encrypt your tokens using your old encryption!"
+            ${GPG} --quiet --recipient ${UserID} --yes --output ${TokenFile} --encrypt ${TokenFileTXT} 2> /dev/null && \
+            echo "Old encryption was used to re-encrypt your tokens!" || echo "It wasn't possible to re-encrypt your tokens using your old encryption!"
     fi
 }
 
@@ -22,8 +22,8 @@ function ChangeGPG () {
     echo "Changing your GPG key. Please, wait..."
 
     ${GPG} --quiet --output ${TokenFileTXT} --decrypt ${TokenFile} 2> /dev/null && DecryptStatus="OK" && \
-    ${GPG} --quiet --recipient ${NewUserID} --yes --output ${TokenFile} --encrypt ${TokenFileTXT} 2> /dev/null && EncryptStatus="OK" && \
-    rm -rf "${TokenFileTXT}" 2> /dev/null
+        ${GPG} --quiet --recipient ${NewUserID} --yes --output ${TokenFile} --encrypt ${TokenFileTXT} 2> /dev/null && EncryptStatus="OK" && \
+        rm -rf "${TokenFileTXT}" 2> /dev/null
 
     if [[ ${DecryptStatus} = "OK" ]]&&[[ ${EncryptStatus} = "OK" ]]; then
         echo "SUCCESS! Your GnuPG key has been changed!"

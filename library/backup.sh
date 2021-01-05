@@ -5,7 +5,6 @@ function Create () {
 
     if [[ -f ${ExportFile} ]]; then
         echo "A file with exported tokens was found at you user's HOME!"
-
         InputData "Would you like to include it in your backup file? [y/N]"
 
         [[ -z ${Input} ]] && Input="n" || Input=${Input,,}
@@ -56,7 +55,6 @@ function Backup () {
                      echo "It's up to you to decide if you want to keep the 'old' configuration"
                      echo "or restore/overwrite your files."
                      echo
-
                      Overwrite "Would you like to continue and overwrite your tokens/config?" \
                                Restore \
                                "Configuration restored!" \

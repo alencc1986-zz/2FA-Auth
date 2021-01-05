@@ -39,7 +39,6 @@ function TokenAdd () {
     echo "replaced using underlines and lowercase letter. For example:"
     echo "'2FA.Auth Code' >>> '2fa_auth_code'"
     echo
-
     InputData "Type the service name you want to add (type 'C' to [C]ANCEL):"
 
     if [[ $( echo ${Input,,} ) = "c" ]]; then
@@ -63,7 +62,8 @@ function TokenAdd () {
 function TokenDel () {
     function Remove () {
         TokenDecrypt | sed "/${Service}/d" > ${TokenFileTXT} && \
-        { [[ $( cat ${TokenFileTXT} | wc -l ) > "0" ]] && TokenEncrypt || rm -rf ${TokenFile} ; }
+            { [[ $( cat ${TokenFileTXT} | wc -l ) > "0" ]] && TokenEncrypt || rm -rf ${TokenFile} ; }
+
         rm -rf ${TokenFileTXT}
     }
 
@@ -302,47 +302,6 @@ function TokenGenerate () {
     fi
 }
 
-function TokenUnify () {
-    if [[ -d $HOME/${ConfigDir}/token ]]; then
-        if [[ $( find $HOME/${ConfigDir}/token -type f -name *.token | wc -l ) > "0" ]]; then
-            echo "Gathering all 2FA tokens into one single file. Please, wait!"
-            echo
-
-            cat /dev/null > ${TempFile}
-
-            AmountOfTokens=$( find $HOME/${ConfigDir}/token -type f -name *.token | wc -l )
-            Counter=1
-
-            for Service in $( basename -a -s .token $( find $HOME/${ConfigDir}/token -type f -name *.token | sort ) ); do
-                echo -n "Processing file ${Counter} of ${AmountOfTokens} (service: ${Service})... "
-
-                Token=$( ${GPG} --quiet --recipient ${UserID} --decrypt $HOME/${ConfigDir}/token/${Service}.token )
-                if [[ $? != "0" ]]; then
-                    echo "FAIL"
-                    echo
-                    echo "Something wrong happened!"
-                    echo "Did you type your GnuPG password correctly?"
-
-                    exit 1
-                else
-                    echo "${Service}|${Token}" >> ${TempFile}
-                    let Counter+=1
-                    echo "done!"
-                fi
-            done
-
-            ${GPG} --recipient ${UserID} --yes --output ${TokenFile} --encrypt ${TempFile}
-            rm -rf ${TempFile} $HOME/${ConfigDir}/token
-
-            echo
-            echo "Tokens were unified with success!"
-            echo "New token file is: ${TokenFile}"
-
-            PressAnyKey
-        fi
-    fi
-}
-
 function Token () {
     clear
 
@@ -353,6 +312,5 @@ function Token () {
         Generate) TokenGenerate ;;
             List) TokenList ;;
           Rename) TokenRename ;;
-           Unify) TokenUnify ;;
     esac
 }
