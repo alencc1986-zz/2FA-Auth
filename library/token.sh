@@ -10,7 +10,7 @@ function TokenEncrypt () {
 
 function TokenAdd () {
     function Add () {
-        InputData "Insert (type or copy-paste) 2FA token for '${Service}' (type 'C' to [C]ANCEL):"
+        InputData "Insert 2FA token for '${Service}' (press 'C' to [C]ANCEL):"
 
         if [[ $( echo ${Input,,} ) = "c" ]]; then
             echo "Canceling..."
@@ -31,15 +31,16 @@ function TokenAdd () {
     }
 
     clear
-    echo "========================="
-    echo "2FA-Auth // Add new token"
-    echo "========================="
+    echo "================================"
+    echo "2FA-Auth ${VERSION} // Add new token"
+    echo "================================"
     echo
     echo "Dots, spaces and uppercase letters in the service name will be"
-    echo "replaced using underlines and lowercase letter. For example:"
-    echo "'2FA.Auth Code' >>> '2fa_auth_code'"
+    echo "replaced by underlines and lowercase letter."
+    echo "For example: '2FA.Auth Code' >>> '2fa_auth_code'"
     echo
-    InputData "Type the service name you want to add (type 'C' to [C]ANCEL):"
+
+    InputData "Type the service name you want to add (press 'C' to [C]ANCEL):"
 
     if [[ $( echo ${Input,,} ) = "c" ]]; then
         echo "Canceling..."
@@ -68,15 +69,15 @@ function TokenDel () {
     }
 
     clear
-    echo "========================"
-    echo "2FA-Auth // Delete token"
-    echo "========================"
+    echo "==============================="
+    echo "2FA-Auth ${VERSION} // Delete token"
+    echo "==============================="
     echo
 
     if [[ ! -f ${TokenFile} ]]; then
         echo "ATTENTION! There are no services to be excluded!"
     else
-        echo "Select a service to be deleted (type 'A' to delete [A]LL or 'C' to [C]ANCEL):"
+        echo "Select a service to be deleted (press 'A' to delete [A]LL or 'C' to [C]ANCEL):"
         echo
 
         declare -a Array
@@ -121,15 +122,15 @@ function TokenDel () {
 
 function TokenList () {
     clear
-    echo "======================"
-    echo "2FA-Auth // List token"
-    echo "======================"
+    echo "============================="
+    echo "2FA-Auth ${VERSION} // List token"
+    echo "============================="
     echo
 
     if [[ ! -f ${TokenFile} ]]; then
         echo "ATTENTION! Nothing to be listed!"
     else
-        echo "Listing all available services:"
+        echo "Listing services:"
         echo
 
         Counter=1
@@ -142,15 +143,15 @@ function TokenList () {
 
 function TokenRename () {
     clear
-    echo "========================"
-    echo "2FA-Auth // Rename token"
-    echo "========================"
+    echo "==============================="
+    echo "2FA-Auth ${VERSION} // Rename token"
+    echo "==============================="
     echo
 
     if [[ ! -f ${TokenFile} ]]; then
         echo "ATTENTION! There is nothing to be renamed!"
     else
-        echo "Listing all available services:"
+        echo "Listing services:"
         echo
 
         declare -a Array
@@ -167,7 +168,7 @@ function TokenRename () {
         Counter="+(${Counter})"
 
         echo
-        read -p "Which service do you want to rename? (type 'C' to [C]ANCEL) " -e -n$( echo ${#Array[*]} | wc -L ) CaseOption
+        read -p "Which service do you want to rename? (press 'C' to [C]ANCEL) " -e -n$( echo ${#Array[*]} | wc -L ) CaseOption
         CaseOption=${CaseOption,,}
 
         shopt -s extglob
@@ -177,7 +178,8 @@ function TokenRename () {
 
                         echo "You selected: ${Service}"
                         echo
-                        InputData "Type the new name for this service (type 'C' to [C]ANCEL):"
+
+                        InputData "Type the new name for this service (press 'C' to [C]ANCEL):"
 
                         case ${Input,,} in
                             c|cancel) echo "Canceling..." ;;
@@ -196,6 +198,7 @@ function TokenRename () {
                         esac ;;
 
                      c) echo "Canceling..." ;;
+
                      *) echo "Invalid option..." ;;
         esac
         shopt -u extglob
@@ -216,9 +219,9 @@ function TokenExport () {
     }
 
     clear
-    echo "========================"
-    echo "2FA-Auth // Export token"
-    echo "========================"
+    echo "==============================="
+    echo "2FA-Auth ${VERSION} // Export token"
+    echo "==============================="
     echo
 
     if [[ ! -f ${TokenFile} ]]; then
@@ -248,9 +251,9 @@ function TokenExport () {
 
 function TokenGenerate () {
     clear
-    echo "=============================="
-    echo "2FA-Auth // Generate 2FA codes"
-    echo "=============================="
+    echo "====================================="
+    echo "2FA-Auth ${VERSION} // Generate 2FA codes"
+    echo "====================================="
     echo
 
     if [[ ! -f ${TokenFile} ]]; then

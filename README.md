@@ -51,4 +51,4 @@ GPG key is created (or imported) into ***$HOME/.gnupg/*** while GPG ID is part o
 ***2FA-Auth*** saves your 2FA token(s) in this directory: ***$HOME/.config/2fa-auth/*** and your GnuPG UserID is saved in ***$HOME/.config/2fa-auth/2fa-auth.info***
 
 <br>
-Copyleft - Vinicius de Alencar (alencc1986) – 2021
+Vinicius de Alencar (alencc1986) – 2021

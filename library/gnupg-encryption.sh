@@ -36,9 +36,9 @@ function ChangeGPG () {
 
 function ChangeMenu () {
     clear
-    echo "==================================="
-    echo "2FA-Auth // Change GnuPG encryption"
-    echo "==================================="
+    echo "=========================================="
+    echo "2FA-Auth ${VERSION} // Change GnuPG encryption"
+    echo "=========================================="
     echo
     echo "Current User ID in use is \"${UserID}\"."
     echo
@@ -54,7 +54,8 @@ function ChangeMenu () {
     echo "-------------------------------------------------"
     echo
 
-    InputData "Type/copy-paste your new UserID (e-mail address) (press [C] to CANCEL):"
+    InputData "Type your new UserID (e-mail address) (press [C] to CANCEL):"
+
     NewUserID=$( echo ${Input,,} | sed 's| \+||g' )
 
     if [[ $( echo ${Input,,} ) = "c" ]]; then
@@ -69,7 +70,7 @@ function ChangeMenu () {
 
             case ${Answer} in
                 y) ChangeGPG ; break ;;
-                n) echo "Keeping your 'old' GPG key!" ; break ;;
+                n) echo "Keeping your previous GPG key!" ; break ;;
                 *) echo "ERROR: Invalid option!" ;;
             esac
         done

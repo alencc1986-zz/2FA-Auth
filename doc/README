@@ -114,4 +114,4 @@ to generate the code (use the menu "Generate 2FA codes" or type "$ 2FA-Auth genc
 can use this token in other 2FA programs/scripts. It's useful when you want to
 use different programs to generate 2FA codes and log in the same site or service.
 
-Copyleft - Vinicius de Alencar (alencc1986) – 2021
+Vinicius de Alencar (alencc1986) – 2021

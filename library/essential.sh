@@ -26,6 +26,8 @@ function InputData () {
     if [[ -z ${Input} ]]; then
         echo "ATTENTION!!! Empty input isn't valid!"
         echo "You must type something!"
+        echo
+
         InputData "${Message}"
     fi
 }
@@ -55,4 +57,17 @@ function Overwrite () {
 function PressAnyKey () {
     echo
     read -p "Press any key to continue... " -e -n1
+}
+
+function Usage () {
+    clear
+
+    echo "========================"
+    echo "2FA-Auth ${VERSION} // Usage"
+    echo "========================"
+    echo
+    echo "You can (optionally) use one of these options:"
+    echo
+    echo "2FA-Auth changekey = Change GnuPG key/encryption"
+    echo "2FA-Auth gencode = Generate 2FA auth codes"
 }

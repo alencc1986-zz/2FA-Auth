@@ -16,6 +16,7 @@ function InstallPackages () {
 
         for PkgMan in "apt" "apt-get" "dnf" "emerge" "equo" "pacman" "urpmi" "yum" "zypper" "NONE"; do
             [[ $( command -v ${PkgMan} ) ]] && break
+            [[ ${PkgMan} = "NONE" ]] && ErrorMsg
         done
 
         echo
@@ -36,7 +37,6 @@ function InstallPackages () {
                      pacman) sudo pacman -Sy ; sudo pacman -Sy --noconfirm gnupg oathtool ;;
                       urpmi) sudo urpmi.update -a ; yes | sudo urpmi gnupg2 oath-toolkit ;;
                      zypper) sudo zypper refresh ; sudo zypper -n install gnupg oath-toolkit ;;
-                       NONE) ErrorMsg ;;
             esac
 
             if [[ $? = "0" ]]; then
@@ -54,11 +54,11 @@ function InstallPackages () {
 function SystemCheck () {
     InstallPackages
 
-    GPG=$( command -v gpg )
-    OATHTOOL=$( command -v oathtool )
+    GPG=$( type -p gpg )
+    OATHTOOL=$( type -p oathtool )
 
     if [[ $( ${GPG} --list-keys | wc -l ) = "0" ]]; then
-        echo "ERROR! No GnuPG key(s) found in your profile!"
+        echo "ERROR! No GnuPG key(s) found in your user's profile!"
         exit 1
     fi
 
@@ -71,9 +71,9 @@ function SystemCheck () {
         while true; do
             clear
 
-            echo "================================="
-            echo "2FA-Auth // Initial configuration"
-            echo "================================="
+            echo "========================================"
+            echo "2FA-Auth ${VERSION} // Initial configuration"
+            echo "========================================"
             echo
             echo "It's mandatory to inform your GnuPG ID (User ID). This ID is"
             echo "essential to encrypt/decrypt your 2FA tokens. User ID is your"
@@ -89,7 +89,7 @@ function SystemCheck () {
             echo "-------------------------------------------------"
             echo
 
-            read -p "Type/copy-paste your User ID (e-mail address): " -e UserID
+            read -p "Type your User ID (e-mail address): " -e UserID
             UserID=$( echo ${UserID,,} | sed 's| \+||g' )
 
 
@@ -97,7 +97,7 @@ function SystemCheck () {
                 echo "UserID ${UserID}" > ${InfoFile}
                 break
             else
-                echo "ERROR! You typed/included an invalid User ID!"
+                echo "ERROR! You typed an invalid User ID!"
                 PressAnyKey
             fi
         done

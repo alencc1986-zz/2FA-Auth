@@ -3,47 +3,39 @@
 function Information () {
     clear
 
-    echo "======================="
-    echo "2FA-Auth // Information"
-    echo "======================="
+    echo "=============================="
+    echo "2FA-Auth ${VERSION} // Information"
+    echo "=============================="
     echo
-    echo "Version............: 3.1-0"
-    echo "Description........: Generating 2FA codes in your terminal"
-    echo "Created by.........: Vinicius de Alencar (alencc1986)"
+    echo "Description...: Generating 2FA codes in your terminal"
+    echo "Created by....: Vinicius de Alencar (alencc1986)"
     echo
-    echo "GnuPG User ID......: $( awk '{ print $2 }' ${InfoFile} )"
+    echo "Your GnuPG User ID is \"$( awk '{ print $2 }' ${InfoFile} )\""
 }
 
 function MainMenu () {
     while true; do
         clear
 
-        echo "====================="
-        echo "2FA-Auth // Main menu"
-        echo "====================="
+        echo "============================"
+        echo "2FA-Auth ${VERSION} // Main menu"
+        echo "============================"
         echo
-        echo "----------------------------------------------"
-        echo "| 2FA-Auth has 2 terminal parameters         |"
-        echo "|                                            |"
-        echo "| 'changekey' -- change GnuPG key/encryption |"
-        echo "|                                            |"
-        echo "| 'gencode'   -- generate auth codes without |"
-        echo "|                use the main menu           |"
-        echo "----------------------------------------------"
+        echo "[1] Add 2FA token"
+        echo "[2] Delete 2FA token"
+        echo "[3] List available 2FA tokens"
+        echo "[4] Rename 2FA token"
+        echo "[5] Export 2FA tokens"
+        echo "[6] Generate authentication codes"
+        echo "[7] Backup tokens and configuration"
+        echo "[8] Restore tokens and configuration"
         echo
-        echo "[1] Add new 2FA auth tokens"
-        echo "[2] Delete 2FA auth tokens"
-        echo "[3] List all 2FA auth tokens"
-        echo "[4] Rename 2FA auth tokens"
-        echo "[5] Export all 2FA auth tokens"
-        echo "[6] Generate 2FA auth codes"
-        echo "[7] Backup your tokens/config"
-        echo "[8] Restore your tokens/config"
-        echo
-        echo "[C] Change GnuPG encryption key"
-        echo "[I] Information"
+        echo "[C] Change your GnuPG key"
+        echo "[I] Information about 2FA-Auth"
+        echo "[U] Usage"
         echo "[Q] Quit"
         echo
+
         read -p "Option: " -e -n1 Option
 
         Option=${Option^^}
@@ -59,6 +51,7 @@ function MainMenu () {
             8) Backup Restore ;;
             C) ChangeMenu ;;
             I) Information ;;
+            U) Usage ;;
             Q) break ;;
             *) echo "Invalid option!" ;;
         esac
